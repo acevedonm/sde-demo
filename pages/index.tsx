@@ -27,15 +27,18 @@ import useDownloader from "react-use-downloader";
 import { styled } from "@mui/material/styles";
 import { FilesService } from "../utils/files.service";
 import ResponsiveAppBar from "../components/ResponsiveAppBar";
+import IconButton from "@mui/material/IconButton";
+import FileDownloadIcon from "@mui/icons-material/FileDownload";
 
 function createData(
+  id: number,
   iniciador: string,
   numero: string,
   anio: string,
   prefijo: string,
   extension: string
 ): Expedientes {
-  return { iniciador, numero, anio, prefijo, extension };
+  return { id, iniciador, numero, anio, prefijo, extension };
 }
 
 function generate(element: React.ReactElement) {
@@ -46,9 +49,11 @@ function generate(element: React.ReactElement) {
   );
 }
 
-function download() {
-  console.log("descargando");
-  FilesService.downloadFile("./assets/ConstanciaCBU.pdf", "constanciaCBU.pdf");
+function download(data: Expedientes) {
+  FilesService.downloadFile(
+    `./assets/${data.prefijo}-${data.numero}-${data.anio}.pdf`,
+    `${data.prefijo}-${data.numero}-${data.anio}.pdf`
+  );
 }
 
 const Demo = styled("div")(({ theme }) => ({
@@ -59,7 +64,14 @@ export default function Home() {
   const [encontrado, setEncontrado] = React.useState(false);
 
   const inicialRows = data.map((element) =>
-    createData(element.iniciador, element.numero, element.anio, "4069", "24")
+    createData(
+      element.id,
+      element.iniciador,
+      element.numero,
+      element.anio,
+      "4069",
+      "24"
+    )
   );
 
   console.log({ inicialRows });
@@ -160,7 +172,7 @@ export default function Home() {
           </Button>
         </Box>
         {encontrado ? (
-          <Box sx={{ flexGrow: 1, maxWidth: 752 }}>
+          <>
             <TableContainer component={Paper}>
               <Table sx={{ minWidth: 650 }} aria-label="simple table">
                 <TableHead>
@@ -170,12 +182,13 @@ export default function Home() {
                     <TableCell align="right">Año </TableCell>{" "}
                     <TableCell align="right">Prefijo </TableCell>
                     <TableCell align="right">Extensión </TableCell>
+                    <TableCell align="right">Descargar </TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {rows.map((row) => (
+                  {rows.map((row, i) => (
                     <TableRow
-                      key={row.iniciador}
+                      key={row.id}
                       sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                     >
                       <TableCell component="th" scope="row">
@@ -186,7 +199,9 @@ export default function Home() {
                       <TableCell align="right">{row.prefijo}</TableCell>
                       <TableCell align="right">{row.extension}</TableCell>
                       <TableCell align="right">
-                        <Button>Descargar</Button>
+                        <IconButton onClick={() => download(row)}>
+                          <FileDownloadIcon></FileDownloadIcon>
+                        </IconButton>
                       </TableCell>
                     </TableRow>
                   ))}
@@ -221,7 +236,7 @@ export default function Home() {
                 </List>
               </Demo>
             </Grid>
-          </Box>
+          </>
         ) : null}
       </Container>
     </>
