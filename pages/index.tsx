@@ -74,7 +74,6 @@ export default function Home() {
     )
   );
 
-  console.log({ inicialRows });
   const [rows, setRows] = React.useState(inicialRows);
   const [fieldsSearch, setFieldsSearch] = React.useState({
     exp: "",
@@ -101,10 +100,9 @@ export default function Home() {
       (element) =>
         fieldsSearch.exp == element.numero || fieldsSearch.year == element.anio
     );
-    console.log;
+
     setRows(newData);
     setEncontrado(true);
-    console.log({ rows });
   };
 
   const changeSeachYear = (event) => {
@@ -208,34 +206,6 @@ export default function Home() {
                 </TableBody>
               </Table>
             </TableContainer>
-            <Grid item xs={12} md={6}>
-              <Typography sx={{ mt: 4, mb: 2 }} variant="h6" component="div">
-                Resultados
-              </Typography>
-              <a
-                href="/assets/constanciaCBU.pdf"
-                target="_blank"
-                rel="noopener noreferrer"
-                download="prueba.pdf"
-              >
-                Download FIle
-              </a>
-              <Demo>
-                <List dense={dense}>
-                  {generate(
-                    <ListItem>
-                      <ListItemIcon>
-                        <FolderIcon />
-                      </ListItemIcon>
-                      <ListItemText
-                        primary="Exp. 1111/2015"
-                        secondary={secondary ? "Secondary text" : null}
-                      />
-                    </ListItem>
-                  )}
-                </List>
-              </Demo>
-            </Grid>
           </>
         ) : null}
       </Container>
