@@ -12,7 +12,7 @@ import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import AdbIcon from "@mui/icons-material/Adb";
-
+import logo from "../assets/logo_gestion.png";
 const pages = ["Buscador", "Carga de Expedientes", "Administracion "];
 const settings = ["Profile", "Account", "Dashboard", "Logout"];
 
@@ -43,7 +43,15 @@ function ResponsiveAppBar() {
     <AppBar position="static">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <AdbIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} />
+          <Box
+            component="img"
+            sx={{
+              height: "12vh",
+            }}
+            alt="Your logo."
+            src="../assets/logo_gestion.png"
+          />
+          {/* 
           <Typography
             variant="h6"
             noWrap
@@ -60,7 +68,7 @@ function ResponsiveAppBar() {
             }}
           >
             LOGO
-          </Typography>
+          </Typography> */}
 
           <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
             <IconButton
@@ -117,12 +125,24 @@ function ResponsiveAppBar() {
           >
             LOGO
           </Typography>
-          <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
+          <Box
+            sx={{
+              flexGrow: 1,
+              display: { xs: "none", md: "flex" },
+            }}
+          >
             {pages.map((page) => (
               <Button
                 key={page}
                 onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: "white", display: "block" }}
+                sx={{
+                  my: 2,
+                  color: "white",
+                  display: "block",
+                  ":hover": {
+                    border: "1px solid #000000",
+                  },
+                }}
               >
                 {page}
               </Button>

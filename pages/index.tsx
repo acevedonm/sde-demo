@@ -29,6 +29,11 @@ import { FilesService } from "../utils/files.service";
 import ResponsiveAppBar from "../components/ResponsiveAppBar";
 import IconButton from "@mui/material/IconButton";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
+import CheckIcon from "@mui/icons-material/Check";
+import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
+import Stack from "@mui/material/Stack";
+import Alert from "@mui/material/Alert";
+import AlertTitle from "@mui/material/AlertTitle";
 
 function createData(
   id: number,
@@ -87,12 +92,31 @@ export default function Home() {
     }, 2000);
   };
 
+  const [alert, setAlert] = React.useState(false);
+
   const verTodos = () => {
     //seteo nuevas rows setRows
+    setAlert(false);
     const newData = data;
     setRows(newData);
     setEncontrado(true);
   };
+
+  function IconAlerts() {
+    return (
+      <Stack sx={{ width: "100%" }} spacing={2}>
+        <Alert
+          severity="error"
+          onClose={() => {
+            setAlert(false);
+          }}
+        >
+          <AlertTitle>Error</AlertTitle>
+          This is an error alert — <strong>check it out!</strong>
+        </Alert>
+      </Stack>
+    );
+  }
 
   const buscar = () => {
     //seteo nuevas rows setRows
@@ -103,6 +127,11 @@ export default function Home() {
 
     setRows(newData);
     setEncontrado(true);
+    if (newData.length == 0) {
+      setAlert(true);
+    } else {
+      setAlert(false);
+    }
   };
 
   const changeSeachYear = (event) => {
@@ -124,6 +153,7 @@ export default function Home() {
     /*  Aca va el login */
     <>
       <ResponsiveAppBar></ResponsiveAppBar>
+      {alert ? <IconAlerts></IconAlerts> : <></>}
       <Container>
         <Box
           component="form"
@@ -165,7 +195,7 @@ export default function Home() {
           >
             Buscar
           </Button>
-          <Button variant="contained" onClick={verTodos}>
+          <Button color="primary" variant="contained" onClick={verTodos}>
             Ver Todos
           </Button>
         </Box>
