@@ -112,7 +112,8 @@ export default function Home() {
           }}
         >
           <AlertTitle>Error</AlertTitle>
-          This is an error alert — <strong>check it out!</strong>
+          No se encontraron expedientes —{" "}
+          <strong> Revise los campos de busqueda</strong>
         </Alert>
       </Stack>
     );
@@ -152,7 +153,6 @@ export default function Home() {
   return (
     /*  Aca va el login */
     <>
-      <ResponsiveAppBar></ResponsiveAppBar>
       {alert ? <IconAlerts></IconAlerts> : <></>}
       <Container>
         <Box
