@@ -11,10 +11,13 @@ import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
+import firebaseApp from "../firebase/client";
+import { getAuth } from "firebase/auth";
 
-import logo from "../assets/logo_gestion.png";
 const pages = ["Buscador", "Carga de Expedientes", "Administracion "];
-const settings = ["Profile", "Account", "Dashboard", "Logout"];
+const settings = ["Perfil", "Configuracion", "Dashboard", "Cerrar Sesión"];
+
+const auth = getAuth(firebaseApp);
 
 function ResponsiveAppBar() {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
@@ -39,6 +42,30 @@ function ResponsiveAppBar() {
     setAnchorElUser(null);
   };
 
+  const handleOptionUserMenu = (e) => {
+    const value = e.target.lastChild.nodeValue;
+    switch (value) {
+      case "Perfil":
+        break;
+      case "Configuracion":
+        break;
+      case "Dashboard":
+        break;
+      case "Cerrar Sesión":
+        auth.signOut().then(
+          function () {
+            console.log("Signed Out");
+          },
+          function (error) {
+            console.error("Sign Out Error", error);
+          }
+        );
+        break;
+      default:
+        break;
+    }
+    setAnchorElUser(null);
+  };
   return (
     <AppBar position="static">
       <Container maxWidth="xl">
@@ -97,7 +124,7 @@ function ResponsiveAppBar() {
             <Button
               key={"buscador"}
               component="a"
-              href="/"
+              href="/search"
               sx={{
                 my: 2,
                 color: "white",
@@ -180,7 +207,11 @@ function ResponsiveAppBar() {
               onClose={handleCloseUserMenu}
             >
               {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                <MenuItem
+                  key={setting}
+                  accessKey={setting}
+                  onClick={handleOptionUserMenu}
+                >
                   <Typography textAlign="center">{setting}</Typography>
                 </MenuItem>
               ))}
@@ -191,4 +222,5 @@ function ResponsiveAppBar() {
     </AppBar>
   );
 }
+
 export default ResponsiveAppBar;

@@ -1,244 +1,103 @@
-import { Container } from "@mui/material";
-import Head from "next/head";
-import Link from "next/link";
 import * as React from "react";
-import { useAppContext } from "../context/DataContext";
-import Grid from "@mui/material/Grid";
-import Typography from "@mui/material/Typography";
-import TextField from "@mui/material/TextField";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import Paper from "@mui/material/Paper";
-import { data, Expedientes } from "../utils/data";
-import CssBaseline from "@mui/material/CssBaseline";
-import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import ListItemAvatar from "@mui/material/ListItemAvatar";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
-import FolderIcon from "@mui/icons-material/Folder";
-import useDownloader from "react-use-downloader";
 import { styled } from "@mui/material/styles";
-import { FilesService } from "../utils/files.service";
-import ResponsiveAppBar from "../components/ResponsiveAppBar";
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogContent from "@mui/material/DialogContent";
+import DialogActions from "@mui/material/DialogActions";
 import IconButton from "@mui/material/IconButton";
-import FileDownloadIcon from "@mui/icons-material/FileDownload";
-import CheckIcon from "@mui/icons-material/Check";
-import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
-import Stack from "@mui/material/Stack";
-import Alert from "@mui/material/Alert";
-import AlertTitle from "@mui/material/AlertTitle";
+import CloseIcon from "@mui/icons-material/Close";
+import Typography from "@mui/material/Typography";
+import SourceIcon from "@mui/icons-material/Source";
 
-function createData(
-  id: number,
-  iniciador: string,
-  numero: string,
-  anio: string,
-  prefijo: string,
-  extension: string
-): Expedientes {
-  return { id, iniciador, numero, anio, prefijo, extension };
-}
-
-function generate(element: React.ReactElement) {
-  return [0].map((value) =>
-    React.cloneElement(element, {
-      key: value,
-    })
-  );
-}
-
-function download(data: Expedientes) {
-  FilesService.downloadFile(
-    `./assets/${data.prefijo}-${data.numero}-${data.anio}.pdf`,
-    `${data.prefijo}-${data.numero}-${data.anio}.pdf`
-  );
-}
-
-const Demo = styled("div")(({ theme }) => ({
-  backgroundColor: theme.palette.background.paper,
+const BootstrapDialog = styled(Dialog)(({ theme }) => ({
+  "& .MuiDialogContent-root": {
+    padding: theme.spacing(2),
+  },
+  "& .MuiDialogActions-root": {
+    padding: theme.spacing(1),
+  },
 }));
 
-export default function Home() {
-  const [encontrado, setEncontrado] = React.useState(false);
+export interface DialogTitleProps {
+  id: string;
+  children?: React.ReactNode;
+  onClose: () => void;
+}
 
-  const inicialRows = data.map((element) =>
-    createData(
-      element.id,
-      element.iniciador,
-      element.numero,
-      element.anio,
-      "4069",
-      "24"
-    )
-  );
-
-  const [rows, setRows] = React.useState(inicialRows);
-  const [fieldsSearch, setFieldsSearch] = React.useState({
-    exp: "",
-    year: "",
-  });
-  const [loading, setLoading] = React.useState(false);
-  const redirect = () => {
-    setLoading(true);
-    setTimeout(function () {
-      setLoading(false);
-    }, 2000);
-  };
-
-  const [alert, setAlert] = React.useState(false);
-
-  const verTodos = () => {
-    //seteo nuevas rows setRows
-    setAlert(false);
-    const newData = data;
-    setRows(newData);
-    setEncontrado(true);
-  };
-
-  function IconAlerts() {
-    return (
-      <Stack sx={{ width: "100%" }} spacing={2}>
-        <Alert
-          severity="error"
-          onClose={() => {
-            setAlert(false);
-          }}
-        >
-          <AlertTitle>Error</AlertTitle>
-          No se encontraron expedientes —{" "}
-          <strong> Revise los campos de busqueda</strong>
-        </Alert>
-      </Stack>
-    );
-  }
-
-  const buscar = () => {
-    //seteo nuevas rows setRows
-    const newData = data.filter(
-      (element) =>
-        fieldsSearch.exp == element.numero || fieldsSearch.year == element.anio
-    );
-
-    setRows(newData);
-    setEncontrado(true);
-    if (newData.length == 0) {
-      setAlert(true);
-    } else {
-      setAlert(false);
-    }
-  };
-
-  const changeSeachYear = (event) => {
-    setFieldsSearch({
-      ...fieldsSearch,
-      year: event.target.value,
-    });
-  };
-  const changeSeachExp = (event) => {
-    setFieldsSearch({
-      ...fieldsSearch,
-      exp: event.target.value,
-    });
-  };
-  const [dense, setDense] = React.useState(false);
-  const [secondary, setSecondary] = React.useState(false);
+function BootstrapDialogTitle(props: DialogTitleProps) {
+  const { children, onClose, ...other } = props;
 
   return (
-    /*  Aca va el login */
-    <>
-      {alert ? <IconAlerts></IconAlerts> : <></>}
-      <Container>
-        <Box
-          component="form"
+    <DialogTitle sx={{ m: 0, p: 2 }} {...other}>
+      {children}
+      {onClose ? (
+        <IconButton
+          aria-label="close"
+          onClick={onClose}
           sx={{
-            "& .MuiTextField-root": { m: 1, width: "25ch" },
+            position: "absolute",
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
           }}
-          noValidate
-          autoComplete="off"
         >
-          <div>
-            <TextField id="outlined-search" label="Iniciador" type="search" />
-            <TextField
-              disabled
-              id="outlined-search"
-              label="Prefijo"
-              defaultValue="4069"
-              type="search"
-            />
-            <TextField
-              id="outlined-search"
-              label="N°"
-              type="search"
-              onChange={changeSeachExp}
-            />
-          </div>
-          <div>
-            <TextField
-              id="outlined-search"
-              label="Año"
-              type="search"
-              onChange={changeSeachYear}
-            />
-            <TextField id="outlined-search" label="Extension" type="search" />
-          </div>
-          <Button
-            variant="contained"
-            onClick={buscar}
-            style={{ marginRight: "10px" }}
-          >
-            Buscar
+          <CloseIcon />
+        </IconButton>
+      ) : null}
+    </DialogTitle>
+  );
+}
+
+export default function Home() {
+  const [open, setOpen] = React.useState(false);
+
+  const [tutorial, setTutorial] = React.useState(false);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  React.useEffect(() => {
+    handleClickOpen();
+  }, []);
+
+  return (
+    <div>
+      <BootstrapDialog
+        onClose={handleClose}
+        aria-labelledby="customized-dialog-title"
+        open={open}
+      >
+        <BootstrapDialogTitle
+          id="customized-dialog-title"
+          onClose={handleClose}
+        >
+          Sistema de Digitalizacion de Expedientes
+        </BootstrapDialogTitle>
+        <DialogContent dividers>
+          <Typography gutterBottom>
+            Bienvenido al sistema de digitalizacion, busqueda y archivado de
+            expedientes de la Municipalidad de Luján
+          </Typography>
+          <Typography gutterBottom>
+            Actualmente nos encontramos en fase de desarrollo, por lo cual
+            algunas opciones no estaran disponibles.
+          </Typography>
+          <Typography gutterBottom>
+            Le pedimos paciencia, el equipo de programadores esta trabajando en
+            ello.
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button autoFocus onClick={handleClose}>
+            Aceptar
           </Button>
-          <Button color="primary" variant="contained" onClick={verTodos}>
-            Ver Todos
-          </Button>
-        </Box>
-        {encontrado ? (
-          <>
-            <TableContainer component={Paper}>
-              <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                <TableHead>
-                  <TableRow>
-                    <TableCell>Iniciador</TableCell>
-                    <TableCell align="right">N° Expediente</TableCell>
-                    <TableCell align="right">Año </TableCell>{" "}
-                    <TableCell align="right">Prefijo </TableCell>
-                    <TableCell align="right">Extensión </TableCell>
-                    <TableCell align="right">Descargar </TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {rows.map((row, i) => (
-                    <TableRow
-                      key={row.id}
-                      sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                    >
-                      <TableCell component="th" scope="row">
-                        {row.iniciador}
-                      </TableCell>
-                      <TableCell align="right">{row.numero}</TableCell>
-                      <TableCell align="right">{row.anio}</TableCell>
-                      <TableCell align="right">{row.prefijo}</TableCell>
-                      <TableCell align="right">{row.extension}</TableCell>
-                      <TableCell align="right">
-                        <IconButton onClick={() => download(row)}>
-                          <FileDownloadIcon></FileDownloadIcon>
-                        </IconButton>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </>
-        ) : null}
-      </Container>
-    </>
+        </DialogActions>
+      </BootstrapDialog>
+    </div>
   );
 }

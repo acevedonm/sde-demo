@@ -1,15 +1,6 @@
-import Head from "next/head";
-import Image from "next/image";
-import { Inter } from "@next/font/google";
-import styles from "../styles/Home.module.css";
-import { useContext } from "react";
-import { AppContext, AppWrapper, useAppContext } from "../context/DataContext";
-import ResponsiveAppBar from "../components/ResponsiveAppBar";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
-import IconButton from "@mui/material/IconButton";
-import PhotoCamera from "@mui/icons-material/PhotoCamera";
 import Stack from "@mui/material/Stack";
 import Snackbar, { SnackbarOrigin } from "@mui/material/Snackbar";
 import * as React from "react";
