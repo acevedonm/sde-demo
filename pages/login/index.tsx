@@ -74,11 +74,20 @@ export default function Login() {
             alignItems: "center",
           }}
         >
+          {" "}
+          <Box
+            component="img"
+            sx={{
+              height: "12vh",
+            }}
+            alt="Your logo."
+            src="../assets/logo_gestion_black.png"
+          />
           <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
             <LockOutlinedIcon />
           </Avatar>
-          <Typography component="h1" variant="h5">
-            Login
+          <Typography component="h1" variant="h5" sx={{ fontSize: "2.3vh" }}>
+            Sistema de Digitalizacion de Expedientes
           </Typography>
           {loading ? (
             <Box

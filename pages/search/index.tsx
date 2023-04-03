@@ -34,16 +34,18 @@ import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import Stack from "@mui/material/Stack";
 import Alert from "@mui/material/Alert";
 import AlertTitle from "@mui/material/AlertTitle";
+import getAllExp from "../../firebase/getAllExp";
+import CircularProgress from "@mui/material/CircularProgress";
 
 function createData(
   id: number,
-  iniciador: string,
-  numero: string,
-  anio: string,
+  starter: string,
+  num: string,
+  year: string,
   prefijo: string,
   extension: string
 ): Expedientes {
-  return { id, iniciador, numero, anio, prefijo, extension };
+  return { id, starter, num, year, prefijo, extension };
 }
 
 function generate(element: React.ReactElement) {
@@ -56,8 +58,8 @@ function generate(element: React.ReactElement) {
 
 function download(data: Expedientes) {
   FilesService.downloadFile(
-    `./assets/${data.prefijo}-${data.numero}-${data.anio}.pdf`,
-    `${data.prefijo}-${data.numero}-${data.anio}.pdf`
+    `./assets/${data.prefijo}-${data.num}-${data.year}.pdf`,
+    `${data.prefijo}-${data.num}-${data.year}.pdf`
   );
 }
 
@@ -71,9 +73,9 @@ export default function Search() {
   const inicialRows = data.map((element) =>
     createData(
       element.id,
-      element.iniciador,
-      element.numero,
-      element.anio,
+      element.starter,
+      element.num,
+      element.year,
       "4069",
       "24"
     )
@@ -84,7 +86,9 @@ export default function Search() {
     exp: "",
     year: "",
   });
+
   const [loading, setLoading] = React.useState(false);
+
   const redirect = () => {
     setLoading(true);
     setTimeout(function () {
@@ -94,10 +98,12 @@ export default function Search() {
 
   const [alert, setAlert] = React.useState(false);
 
-  const verTodos = () => {
+  const verTodos = async () => {
     //seteo nuevas rows setRows
     setAlert(false);
-    const newData = data;
+    setLoading(true);
+    const newData = await getAllExp();
+    setLoading(false);
     setRows(newData);
     setEncontrado(true);
   };
@@ -123,7 +129,7 @@ export default function Search() {
     //seteo nuevas rows setRows
     const newData = data.filter(
       (element) =>
-        fieldsSearch.exp == element.numero || fieldsSearch.year == element.anio
+        fieldsSearch.exp == element.num || fieldsSearch.year == element.year
     );
 
     setRows(newData);
@@ -199,7 +205,19 @@ export default function Search() {
             Ver Todos
           </Button>
         </Box>
-        {encontrado ? (
+        {loading && (
+          <Box
+            sx={{
+              display: "flex",
+              marginTop: "5vh",
+
+              justifyContent: "center",
+            }}
+          >
+            <CircularProgress size={150} />
+          </Box>
+        )}
+        {encontrado && !loading ? (
           <>
             <TableContainer component={Paper}>
               <Table sx={{ minWidth: 650 }} aria-label="simple table">
@@ -220,10 +238,10 @@ export default function Search() {
                       sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                     >
                       <TableCell component="th" scope="row">
-                        {row.iniciador}
+                        {row.starter}
                       </TableCell>
-                      <TableCell align="right">{row.numero}</TableCell>
-                      <TableCell align="right">{row.anio}</TableCell>
+                      <TableCell align="right">{row.num}</TableCell>
+                      <TableCell align="right">{row.year}</TableCell>
                       <TableCell align="right">{row.prefijo}</TableCell>
                       <TableCell align="right">{row.extension}</TableCell>
                       <TableCell align="right">

@@ -23,15 +23,13 @@ export default function MyApp(props: MyAppProps) {
 
   const [user, setUser] = React.useState(undefined);
 
-  React.useEffect(() => {
-    onAuthStateChanged(auth, (usuario) => {
-      if (usuario) {
-        setUser(usuario);
-      } else {
-        setUser(null);
-      }
-    });
-  }, []);
+  onAuthStateChanged(auth, (usuario) => {
+    if (usuario) {
+      setUser(usuario);
+    } else {
+      setUser(null);
+    }
+  });
 
   return (
     <CacheProvider value={emotionCache}>
