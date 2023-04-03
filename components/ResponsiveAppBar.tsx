@@ -13,6 +13,7 @@ import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import firebaseApp from "../firebase/client";
 import { getAuth } from "firebase/auth";
+import { useRouter } from "next/router";
 
 const pages = ["Buscador", "Carga de Expedientes", "Administracion "];
 const settings = ["Perfil", "Configuracion", "Cerrar Sesión"];
@@ -26,6 +27,13 @@ function ResponsiveAppBar() {
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
     null
   );
+
+  const router = useRouter();
+
+  const handleRouter = (href) => {
+    handleCloseNavMenu();
+    router.push(href);
+  };
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
@@ -70,14 +78,6 @@ function ResponsiveAppBar() {
     <AppBar position="static">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <Box
-            component="img"
-            sx={{
-              height: "12vh",
-            }}
-            alt="Your logo."
-            src="../assets/logo_gestion.png"
-          />
           <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
             <IconButton
               size="large"
@@ -107,13 +107,47 @@ function ResponsiveAppBar() {
                 display: { xs: "block", md: "none" },
               }}
             >
-              {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center">{page}</Typography>
-                </MenuItem>
-              ))}
+              <MenuItem key={"buscador"} onClick={() => handleRouter("search")}>
+                <Typography textAlign="center">Buscador</Typography>
+              </MenuItem>
+              <MenuItem
+                key={"Carga de Expedientes"}
+                onClick={() => handleRouter("upload")}
+              >
+                <Typography textAlign="center">Carga de Expedientes</Typography>
+              </MenuItem>
+              <MenuItem
+                key={"Administracion"}
+                onClick={() => handleRouter("dashboard")}
+              >
+                <Typography textAlign="center">Administracion</Typography>
+              </MenuItem>
+              <Button
+                key={"buscador"}
+                component="a"
+                href="/search"
+                sx={{
+                  my: 2,
+                  color: "",
+                  display: "block",
+                  ":hover": {
+                    border: "1px solid #000000",
+                  },
+                }}
+              >
+                buscador
+              </Button>
             </Menu>
           </Box>
+
+          <Box
+            component="img"
+            sx={{
+              height: "12vh",
+            }}
+            alt="Your logo."
+            src="../assets/logo_gestion.png"
+          />
 
           <Box
             sx={{
