@@ -15,7 +15,7 @@ import firebaseApp from "../firebase/client";
 import { getAuth } from "firebase/auth";
 
 const pages = ["Buscador", "Carga de Expedientes", "Administracion "];
-const settings = ["Perfil", "Configuracion", "Dashboard", "Cerrar Sesión"];
+const settings = ["Perfil", "Configuracion", "Cerrar Sesión"];
 
 const auth = getAuth(firebaseApp);
 
@@ -166,22 +166,6 @@ function ResponsiveAppBar() {
             >
               Administracion
             </Button>
-
-            <Button
-              key={"page"}
-              component="a"
-              href="/nuevapage"
-              sx={{
-                my: 2,
-                color: "white",
-                display: "block",
-                ":hover": {
-                  border: "1px solid #000000",
-                },
-              }}
-            >
-              nueva
-            </Button>
           </Box>
 
           <Box sx={{ flexGrow: 0 }}>
@@ -207,11 +191,7 @@ function ResponsiveAppBar() {
               onClose={handleCloseUserMenu}
             >
               {settings.map((setting) => (
-                <MenuItem
-                  key={setting}
-                  accessKey={setting}
-                  onClick={handleOptionUserMenu}
-                >
+                <MenuItem key={setting} onClick={handleOptionUserMenu}>
                   <Typography textAlign="center">{setting}</Typography>
                 </MenuItem>
               ))}
