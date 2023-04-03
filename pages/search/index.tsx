@@ -35,7 +35,7 @@ import Stack from "@mui/material/Stack";
 import Alert from "@mui/material/Alert";
 import AlertTitle from "@mui/material/AlertTitle";
 import getAllExp from "../../firebase/getAllExp";
-import CircularProgress from "@mui/material/CircularProgress";
+import LinearProgress from "@mui/material/LinearProgress";
 import searchExp from "../../firebase/searchExp";
 
 function createData(
@@ -230,15 +230,8 @@ export default function Search() {
           </Button>
         </Box>
         {loading && (
-          <Box
-            sx={{
-              display: "flex",
-              marginTop: "5vh",
-
-              justifyContent: "center",
-            }}
-          >
-            <CircularProgress size={150} />
+          <Box sx={{ marginTop: "15vh", width: "100%" }}>
+            <LinearProgress />
           </Box>
         )}
         {encontrado && !loading ? (
