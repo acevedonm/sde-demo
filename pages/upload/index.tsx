@@ -6,6 +6,8 @@ import Snackbar, { SnackbarOrigin } from "@mui/material/Snackbar";
 import * as React from "react";
 import MuiAlert, { AlertProps } from "@mui/material/Alert";
 import { Container } from "@mui/material";
+import createExp from "../../firebase/createExp";
+import FieldsUpload from "../../src/interfaces/fieldsUpload";
 
 export interface State extends SnackbarOrigin {
   open: boolean;
@@ -25,9 +27,12 @@ export default function Upload() {
     prefijo: "4069",
     num: "",
     year: "",
+    extension: "",
   });
 
   const handleClick = () => {
+    const setFields: FieldsUpload = fields;
+    createExp(setFields);
     setOpen(true);
   };
   const handleClose = (
@@ -43,7 +48,7 @@ export default function Upload() {
   const changeStarter = (event) => {
     setFields({
       ...fields,
-      num: event.target.value,
+      starter: event.target.value,
     });
   };
 
@@ -58,6 +63,13 @@ export default function Upload() {
     setFields({
       ...fields,
       year: event.target.value,
+    });
+  };
+
+  const changeExtension = (event) => {
+    setFields({
+      ...fields,
+      extension: event.target.value,
     });
   };
 
@@ -89,7 +101,7 @@ export default function Upload() {
         >
           <div>
             <TextField
-              id="starter"
+              id="outlined-search"
               label="Iniciador"
               type="search"
               onChange={changeStarter}
@@ -113,9 +125,14 @@ export default function Upload() {
               id="outlined-search"
               label="Año"
               type="search"
-              // onChange={changeSeachYear}
+              onChange={changeYear}
             />
-            <TextField id="outlined-search" label="Extension" type="search" />
+            <TextField
+              id="outlined-search"
+              label="Extension"
+              type="search"
+              onChange={changeExtension}
+            />
           </div>
         </Box>
         <Box
