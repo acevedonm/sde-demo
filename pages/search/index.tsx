@@ -36,6 +36,7 @@ import Alert from "@mui/material/Alert";
 import AlertTitle from "@mui/material/AlertTitle";
 import getAllExp from "../../firebase/getAllExp";
 import CircularProgress from "@mui/material/CircularProgress";
+import searchExp from "../../firebase/searchExp";
 
 function createData(
   id: number,
@@ -83,8 +84,11 @@ export default function Search() {
 
   const [rows, setRows] = React.useState(inicialRows);
   const [fieldsSearch, setFieldsSearch] = React.useState({
-    exp: "",
+    starter: "",
+    prefijo: "4069",
+    num: "",
     year: "",
+    extension: "",
   });
 
   const [loading, setLoading] = React.useState(false);
@@ -125,32 +129,42 @@ export default function Search() {
     );
   }
 
-  const buscar = () => {
+  const buscar = async () => {
     //seteo nuevas rows setRows
-    const newData = data.filter(
-      (element) =>
-        fieldsSearch.exp == element.num || fieldsSearch.year == element.year
-    );
-
+    setLoading(true);
+    const newData = await searchExp(fieldsSearch);
     setRows(newData);
     setEncontrado(true);
+    setLoading(false);
     if (newData.length == 0) {
       setAlert(true);
     } else {
       setAlert(false);
     }
   };
+  const changeSeachStarter = (event) => {
+    setFieldsSearch({
+      ...fieldsSearch,
+      starter: event.target.value,
+    });
+  };
 
+  const changeSeachNum = (event) => {
+    setFieldsSearch({
+      ...fieldsSearch,
+      num: event.target.value,
+    });
+  };
   const changeSeachYear = (event) => {
     setFieldsSearch({
       ...fieldsSearch,
       year: event.target.value,
     });
   };
-  const changeSeachExp = (event) => {
+  const changeSeachExtension = (event) => {
     setFieldsSearch({
       ...fieldsSearch,
-      exp: event.target.value,
+      extension: event.target.value,
     });
   };
   const [dense, setDense] = React.useState(false);
@@ -170,7 +184,12 @@ export default function Search() {
           autoComplete="off"
         >
           <div>
-            <TextField id="outlined-search" label="Iniciador" type="search" />
+            <TextField
+              id="outlined-search"
+              label="Iniciador"
+              type="search"
+              onChange={changeSeachStarter}
+            />
             <TextField
               disabled
               id="outlined-search"
@@ -182,7 +201,7 @@ export default function Search() {
               id="outlined-search"
               label="N°"
               type="search"
-              onChange={changeSeachExp}
+              onChange={changeSeachNum}
             />
           </div>
           <div>
@@ -192,7 +211,12 @@ export default function Search() {
               type="search"
               onChange={changeSeachYear}
             />
-            <TextField id="outlined-search" label="Extension" type="search" />
+            <TextField
+              id="outlined-search"
+              label="Extension"
+              type="search"
+              onChange={changeSeachExtension}
+            />
           </div>
           <Button
             variant="contained"
