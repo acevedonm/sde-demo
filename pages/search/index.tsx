@@ -127,7 +127,7 @@ export default function Search() {
     //seteo nuevas rows setRows
     setLoading(true);
     const newData = await searchExp(fieldsSearch);
-    console.log({ newData });
+
     setRows(newData);
     setEncontrado(true);
     setLoading(false);

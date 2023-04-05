@@ -24,6 +24,5 @@ export default async function (fields: FieldsUpload) {
 
   let ref = doc(db, "expedientes", documentId);
 
-  console.log({ fields });
   await setDoc(ref, fields);
 }

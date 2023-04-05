@@ -24,6 +24,6 @@ export default async function () {
   snapshot.forEach((doc) => {
     expedientes.push(doc.data());
   });
-  console.log({ expedientes });
+
   return expedientes;
 }

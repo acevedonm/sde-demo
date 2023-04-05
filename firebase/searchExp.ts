@@ -52,7 +52,6 @@ export default async function (fieldsSearch) {
     );
   }
 
-  console.log({ expedientesArray });
   return await _.uniqWith(expedientesArray, _.isEqual);
 }
 
@@ -71,5 +70,5 @@ const getData = async (
     response.push(o);
   });
 
-  return await response;
+  return response;
 };
