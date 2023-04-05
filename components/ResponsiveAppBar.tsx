@@ -122,21 +122,6 @@ function ResponsiveAppBar() {
               >
                 <Typography textAlign="center">Administracion</Typography>
               </MenuItem>
-              <Button
-                key={"buscador"}
-                component="a"
-                href="/search"
-                sx={{
-                  my: 2,
-                  color: "",
-                  display: "block",
-                  ":hover": {
-                    border: "1px solid #000000",
-                  },
-                }}
-              >
-                buscador
-              </Button>
             </Menu>
           </Box>
 
@@ -205,7 +190,10 @@ function ResponsiveAppBar() {
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                <Avatar
+                  alt="Remy Sharp"
+                  src="https://www.pngarts.com/explore/238415/download/238414"
+                />
               </IconButton>
             </Tooltip>
             <Menu

@@ -4,9 +4,11 @@ import {
   getDocs,
   query,
   where,
+  WhereFilterOp,
 } from "firebase/firestore";
 import FieldsUpload from "../src/interfaces/fieldsUpload";
 import firebaseApp from "./client";
+import _ from "lodash";
 
 interface Expediente {
   starter: string;
@@ -19,22 +21,55 @@ interface Expediente {
 const db = getFirestore(firebaseApp);
 
 export default async function (fieldsSearch) {
-  console.log({ fieldsSearch });
   const { starter, prefijo, num, year, extension }: FieldsUpload = fieldsSearch;
-  const expedientes = [];
+  let expedientesArray = [];
 
-  const q = query(
-    collection(db, "expedientes"),
-    where("starter", "==", starter),
-    where("prefijo", "==", prefijo),
-    where("num", "==", num),
-    where("year", "==", year),
-    where("extension", "==", extension)
-  );
+  if (starter) {
+    expedientesArray = _.concat(
+      expedientesArray,
+      await getData("expedientes", "starter", starter, "==")
+    );
+  }
+
+  if (num) {
+    expedientesArray = _.concat(
+      expedientesArray,
+      await getData("expedientes", "num", num, "==")
+    );
+  }
+
+  if (year) {
+    expedientesArray = _.concat(
+      expedientesArray,
+      await getData("expedientes", "year", year, "==")
+    );
+  }
+
+  if (extension) {
+    expedientesArray = _.concat(
+      expedientesArray,
+      await getData("expedientes", "extension", extension, "==")
+    );
+  }
+
+  console.log({ expedientesArray });
+  return await _.uniqWith(expedientesArray, _.isEqual);
+}
+
+const getData = async (
+  colection: string,
+  field: string,
+  value: string,
+  operator: WhereFilterOp
+) => {
+  const response = [];
+  const q = query(collection(db, colection), where(field, operator, value));
   const snapshot = await getDocs(q);
   snapshot.forEach((doc) => {
-    expedientes.push(doc.data());
+    const o = doc.data();
+    o["id"] = doc.id;
+    response.push(o);
   });
-  console.log({ expedientes });
-  return expedientes;
-}
+
+  return await response;
+};

@@ -70,19 +70,6 @@ const Demo = styled("div")(({ theme }) => ({
 
 export default function Search() {
   const [encontrado, setEncontrado] = React.useState(false);
-
-  const inicialRows = data.map((element) =>
-    createData(
-      element.id,
-      element.starter,
-      element.num,
-      element.year,
-      "4069",
-      "24"
-    )
-  );
-
-  const [rows, setRows] = React.useState(inicialRows);
   const [fieldsSearch, setFieldsSearch] = React.useState({
     starter: "",
     prefijo: "4069",
@@ -90,27 +77,24 @@ export default function Search() {
     year: "",
     extension: "",
   });
-
   const [loading, setLoading] = React.useState(false);
-
   const redirect = () => {
     setLoading(true);
     setTimeout(function () {
       setLoading(false);
     }, 2000);
   };
-
   const [alert, setAlert] = React.useState(false);
+  const [rows, setRows] = React.useState([]);
 
-  const verTodos = async () => {
-    //seteo nuevas rows setRows
-    setAlert(false);
-    setLoading(true);
-    const newData = await getAllExp();
-    setLoading(false);
-    setRows(newData);
-    setEncontrado(true);
-  };
+  /*   const handlerGetAllExp = React.useCallback(async () => {
+    const data = await getAllExp();
+    setRows(data);
+  }, []);
+
+  React.useEffect(() => {
+    handlerGetAllExp();
+  }, [handlerGetAllExp]); */
 
   function IconAlerts() {
     return (
@@ -129,10 +113,21 @@ export default function Search() {
     );
   }
 
+  const verTodos = async () => {
+    //seteo nuevas rows setRows
+    setAlert(false);
+    setLoading(true);
+    const newData = await getAllExp();
+    setLoading(false);
+    setRows(newData);
+    setEncontrado(true);
+  };
+
   const buscar = async () => {
     //seteo nuevas rows setRows
     setLoading(true);
     const newData = await searchExp(fieldsSearch);
+    console.log({ newData });
     setRows(newData);
     setEncontrado(true);
     setLoading(false);
@@ -142,6 +137,7 @@ export default function Search() {
       setAlert(false);
     }
   };
+
   const changeSeachStarter = (event) => {
     setFieldsSearch({
       ...fieldsSearch,
@@ -167,8 +163,6 @@ export default function Search() {
       extension: event.target.value,
     });
   };
-  const [dense, setDense] = React.useState(false);
-  const [secondary, setSecondary] = React.useState(false);
 
   return (
     /*  Aca va el login */
@@ -185,20 +179,20 @@ export default function Search() {
         >
           <div>
             <TextField
-              id="outlined-search"
+              id="starter"
               label="Iniciador"
               type="search"
               onChange={changeSeachStarter}
             />
             <TextField
               disabled
-              id="outlined-search"
+              id="prefijo"
               label="Prefijo"
               defaultValue="4069"
               type="search"
             />
             <TextField
-              id="outlined-search"
+              id="num"
               label="N°"
               type="search"
               onChange={changeSeachNum}
@@ -206,13 +200,13 @@ export default function Search() {
           </div>
           <div>
             <TextField
-              id="outlined-search"
+              id="year"
               label="Año"
               type="search"
               onChange={changeSeachYear}
             />
             <TextField
-              id="outlined-search"
+              id="extension"
               label="Extension"
               type="search"
               onChange={changeSeachExtension}
@@ -242,16 +236,15 @@ export default function Search() {
                   <TableRow>
                     <TableCell>Iniciador</TableCell>
                     <TableCell align="right">N° Expediente</TableCell>
-                    <TableCell align="right">Año </TableCell>{" "}
+                    <TableCell align="right">Año </TableCell>
                     <TableCell align="right">Prefijo </TableCell>
                     <TableCell align="right">Extensión </TableCell>
                     <TableCell align="right">Descargar </TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {rows.map((row, i) => (
+                  {rows?.map((row) => (
                     <TableRow
-                      key={row.id}
                       sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                     >
                       <TableCell component="th" scope="row">
