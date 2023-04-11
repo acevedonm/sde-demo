@@ -1,10 +1,5 @@
 import { Container } from "@mui/material";
-import Head from "next/head";
-import Link from "next/link";
-import * as React from "react";
-import { useAppContext } from "../../context/DataContext";
-import Grid from "@mui/material/Grid";
-import Typography from "@mui/material/Typography";
+import { useState } from "react";
 import TextField from "@mui/material/TextField";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -13,49 +8,18 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import { data, Expedientes } from "../../utils/data";
-import CssBaseline from "@mui/material/CssBaseline";
+import { Expedientes } from "../../utils/data";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import ListItemAvatar from "@mui/material/ListItemAvatar";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
-import FolderIcon from "@mui/icons-material/Folder";
-import useDownloader from "react-use-downloader";
-import { styled } from "@mui/material/styles";
 import { FilesService } from "../../utils/files.service";
-import ResponsiveAppBar from "../../components/ResponsiveAppBar";
 import IconButton from "@mui/material/IconButton";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
-import CheckIcon from "@mui/icons-material/Check";
-import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import Stack from "@mui/material/Stack";
 import Alert from "@mui/material/Alert";
 import AlertTitle from "@mui/material/AlertTitle";
 import getAllExp from "../../firebase/getAllExp";
 import LinearProgress from "@mui/material/LinearProgress";
 import searchExp from "../../firebase/searchExp";
-
-function createData(
-  id: number,
-  starter: string,
-  num: string,
-  year: string,
-  prefijo: string,
-  extension: string
-): Expedientes {
-  return { id, starter, num, year, prefijo, extension };
-}
-
-function generate(element: React.ReactElement) {
-  return [0].map((value) =>
-    React.cloneElement(element, {
-      key: value,
-    })
-  );
-}
 
 function download(data: Expedientes) {
   FilesService.downloadFile(
@@ -64,28 +28,19 @@ function download(data: Expedientes) {
   );
 }
 
-const Demo = styled("div")(({ theme }) => ({
-  backgroundColor: theme.palette.background.paper,
-}));
-
 export default function Search() {
-  const [encontrado, setEncontrado] = React.useState(false);
-  const [fieldsSearch, setFieldsSearch] = React.useState({
+  const [encontrado, setEncontrado] = useState(false);
+  const [fieldsSearch, setFieldsSearch] = useState({
     starter: "",
     prefijo: "4069",
     num: "",
     year: "",
     extension: "",
   });
-  const [loading, setLoading] = React.useState(false);
-  const redirect = () => {
-    setLoading(true);
-    setTimeout(function () {
-      setLoading(false);
-    }, 2000);
-  };
-  const [alert, setAlert] = React.useState(false);
-  const [rows, setRows] = React.useState([]);
+  const [loading, setLoading] = useState(false);
+
+  const [alert, setAlert] = useState(false);
+  const [rows, setRows] = useState([]);
 
   /*   const handlerGetAllExp = React.useCallback(async () => {
     const data = await getAllExp();

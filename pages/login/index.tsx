@@ -1,4 +1,4 @@
-import * as React from "react";
+import { useEffect, useState } from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -19,6 +19,7 @@ import {
 
 import firebaseApp from "../../firebase/client";
 import CircularProgress from "@mui/material/CircularProgress";
+import { Fade } from "@mui/material";
 
 function Copyright(props: any) {
   return (
@@ -41,7 +42,15 @@ function Copyright(props: any) {
 const auth = getAuth(firebaseApp);
 
 export default function Login() {
-  const [loading, setLoading] = React.useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const [checked, setChecked] = useState(false);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setChecked(true);
+    }, 1000);
+  }, []);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -64,7 +73,7 @@ export default function Login() {
   };
 
   return (
-    <>
+    <Fade in={checked} timeout={600}>
       <Container component="main" maxWidth="xs">
         <Box
           sx={{
@@ -155,6 +164,6 @@ export default function Login() {
 
         <Copyright sx={{ mt: 8, mb: 4 }} />
       </Container>
-    </>
+    </Fade>
   );
 }
