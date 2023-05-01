@@ -1,5 +1,5 @@
 import { Container } from "@mui/material";
-import { useState } from "react";
+import { useState, useCallback, useEffect } from "react";
 import TextField from "@mui/material/TextField";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -42,14 +42,14 @@ export default function Search() {
   const [alert, setAlert] = useState(false);
   const [rows, setRows] = useState([]);
 
-  /*   const handlerGetAllExp = React.useCallback(async () => {
+    const handlerGetAllExp =  useCallback(async () => {
     const data = await getAllExp();
     setRows(data);
   }, []);
 
-  React.useEffect(() => {
+   useEffect(() => {
     handlerGetAllExp();
-  }, [handlerGetAllExp]); */
+  }, [handlerGetAllExp]);
 
   function IconAlerts() {
     return (
@@ -200,6 +200,7 @@ export default function Search() {
                 <TableBody>
                   {rows?.map((row) => (
                     <TableRow
+                    key = {row.id}
                       sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                     >
                       <TableCell component="th" scope="row">
