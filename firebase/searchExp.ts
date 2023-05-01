@@ -20,7 +20,7 @@ interface Expediente {
 
 const db = getFirestore(firebaseApp);
 
-export default async function (fieldsSearch) {
+export default async function searchExp (fieldsSearch) {
   const { starter, prefijo, num, year, extension }: FieldsUpload = fieldsSearch;
   let expedientesArray = [];
 
@@ -56,13 +56,13 @@ export default async function (fieldsSearch) {
 }
 
 const getData = async (
-  colection: string,
+  col: string,
   field: string,
   value: string,
   operator: WhereFilterOp
 ) => {
   const response = [];
-  const q = query(collection(db, colection), where(field, operator, value));
+  const q = query(collection(db, col), where(field, operator, value));
   const snapshot = await getDocs(q);
   snapshot.forEach((doc) => {
     const o = doc.data();

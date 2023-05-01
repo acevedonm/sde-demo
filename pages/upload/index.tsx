@@ -8,6 +8,7 @@ import MuiAlert, { AlertProps } from "@mui/material/Alert";
 import { Container } from "@mui/material";
 import createExp from "../../firebase/createExp";
 import FieldsUpload from "../../src/interfaces/fieldsUpload";
+import uploadPDF from "../../firebase/uploadPDF";
 
 export interface State extends SnackbarOrigin {
   open: boolean;
@@ -20,8 +21,9 @@ export default function Upload() {
   ) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
   });
-
+  
   const [open, setOpen] = React.useState(false);
+  const [PDF, setPDF] = React.useState({});
   const [fields, setFields] = React.useState({
     starter: "",
     prefijo: "4069",
@@ -31,8 +33,7 @@ export default function Upload() {
   });
 
   const handleClick = () => {
-    const setFields: FieldsUpload = fields;
-    createExp(setFields);
+    createExp(fields,PDF);
     setOpen(true);
   };
   const handleClose = (
@@ -146,7 +147,7 @@ export default function Upload() {
           <Stack direction="row" alignItems="center" spacing={2}>
             <Button variant="contained" component="label" color="info">
               Cargar Expediente
-              <input hidden accept="image/*" multiple type="file" />
+              <input hidden accept="image/*,.pdf" multiple type="file" onChange={e => setPDF(e.target.files[0])}/>
             </Button>
             <Button variant="contained" component="label" onClick={handleClick}>
               Guardar

@@ -8,6 +8,7 @@ import {
 } from "firebase/firestore";
 import FieldsUpload from "../src/interfaces/fieldsUpload";
 import firebaseApp from "./client";
+import uploadPDF from "./uploadPDF";
 
 interface Expediente {
   starter: string;
@@ -19,10 +20,10 @@ interface Expediente {
 
 const db = getFirestore(firebaseApp);
 
-export default async function (fields: FieldsUpload) {
+export default async function createExp(fields: FieldsUpload,PDF) {
   let documentId = doc(collection(db, "expedientes")).id;
 
   let ref = doc(db, "expedientes", documentId);
-
+  uploadPDF(PDF,documentId)
   await setDoc(ref, fields);
 }

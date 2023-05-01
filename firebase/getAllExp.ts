@@ -17,7 +17,7 @@ interface Expediente {
 
 const db = getFirestore(firebaseApp);
 
-export default async function () {
+export default async function getAllExp () {
   const expedientes = [];
   const q = query(collection(db, "expedientes"));
   const snapshot = await getDocs(q);
