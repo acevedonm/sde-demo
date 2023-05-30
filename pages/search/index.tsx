@@ -183,21 +183,21 @@ export default function Search() {
               type="search"
               onChange={changeSeachNum}
             />
-          </div>
-          <div>
+        
+        
             <TextField
               id="year"
               label="Año"
               type="search"
               onChange={changeSeachYear}
             />
-            <TextField
+{/*             <TextField
               id="extension"
-              label="Extension"
+              label="Extracto"
               type="search"
               onChange={changeSeachExtension}
-            />
-          </div>
+            /> */}
+            </div>
           <Button
             variant="contained"
             onClick={buscar}
@@ -224,7 +224,7 @@ export default function Search() {
                     <TableCell align="right">N° Expediente</TableCell>
                     <TableCell align="right">Año </TableCell>
                     <TableCell align="right">Prefijo </TableCell>
-                    <TableCell align="right">Extensión </TableCell>
+                    <TableCell align="right">Extracto </TableCell>
                     <TableCell align="right">Descargar </TableCell>
                   </TableRow>
                 </TableHead>
