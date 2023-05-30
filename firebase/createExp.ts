@@ -10,23 +10,21 @@ import FieldsUpload from "../src/interfaces/fieldsUpload";
 import firebaseApp from "./client";
 import uploadPDF from "./uploadPDF";
 
-interface Expediente {
-  starter: string;
-  prefijo: string;
-  num: string;
-  year: string;
-  extension: string;
-}
 
 const db = getFirestore(firebaseApp);
 
 export default async function createExp(fields: FieldsUpload,PDF) {
-  let documentId = doc(collection(db, "expedientes")).id;
 
-  let ref = doc(db, "expedientes", documentId);
-  uploadPDF(PDF,documentId)
-  console.log("creando expediente: ", ref )
-  console.log({ref})
-  console.log({fields})
-  await setDoc(ref, fields);
+  try {
+    if(!fields.num) throw new Error()
+    let documentId = doc(collection(db, "expedientes")).id;
+    let ref = doc(db, "expedientes", documentId);
+    uploadPDF(PDF,documentId)
+    await setDoc(ref, fields);
+   
+  } catch (error) {
+    console.log("error en createExp: ", error)
+    return error
+  }
+ 
 }
