@@ -55,6 +55,8 @@ export default async function searchExp (fieldsSearch) {
   return await _.uniqWith(expedientesArray, _.isEqual);
 }
 
+
+//hace una busqueda con wheres or (muy costosa)
 const getData = async (
   col: string,
   field: string,
@@ -72,3 +74,27 @@ const getData = async (
 
   return response;
 };
+
+
+
+//hace una busqueda con wheres and
+ async function findWhere (fieldsSearch) {
+  console.log({ fieldsSearch });
+  const { starter, prefijo, num, year, extension }: FieldsUpload = fieldsSearch;
+  const expedientes = [];
+
+  const q = query(
+    collection(db, "expedientes"),
+    where("starter", "==", starter),
+    where("prefijo", "==", prefijo),
+    where("num", "==", num),
+    where("year", "==", year),
+    where("extension", "==", extension)
+  );
+  const snapshot = await getDocs(q);
+  snapshot.forEach((doc) => {
+    expedientes.push(doc.data());
+  });
+  console.log({ expedientes });
+  return expedientes;
+}

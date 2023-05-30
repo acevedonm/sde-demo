@@ -8,7 +8,6 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import { Expedientes } from "../../utils/data";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import { FilesService } from "../../utils/files.service";
@@ -20,12 +19,44 @@ import AlertTitle from "@mui/material/AlertTitle";
 import getAllExp from "../../firebase/getAllExp";
 import LinearProgress from "@mui/material/LinearProgress";
 import searchExp from "../../firebase/searchExp";
+import { Expedientes } from "../../src/interfaces/expedientes";
+import { getStorage, ref, getDownloadURL } from "firebase/storage";
+
+
+const storage = getStorage();
+
+
+
 
 function download(data: Expedientes) {
-  FilesService.downloadFile(
-    `./assets/${data.prefijo}-${data.num}-${data.year}.pdf`,
-    `${data.prefijo}-${data.num}-${data.year}.pdf`
-  );
+
+
+  console.log({data})
+  const gsReference = ref(storage, 'gs://bucket/images/stars.jpg');
+
+  //dewTM0VZee0qjwnLBEgX.
+  //${data.id}
+
+  getDownloadURL(ref(storage, `expedientes/${data.id}.pdf`))
+  .then((url) => {
+    FilesService.downloadFile(url, "name"
+    );
+    console.log({url})
+    const xhr = new XMLHttpRequest();
+    xhr.responseType = 'blob';
+    xhr.onload = (event) => {
+      const blob = xhr.response;
+    };
+    xhr.open('GET', url);
+    xhr.send();
+    const img = document.getElementById('myimg');
+    img.setAttribute('src', url);
+  })
+  .catch((error) => {
+   console.log({error})
+  });
+
+
 }
 
 export default function Search() {

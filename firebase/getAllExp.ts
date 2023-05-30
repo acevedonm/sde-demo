@@ -22,7 +22,9 @@ export default async function getAllExp () {
   const q = query(collection(db, "expedientes"));
   const snapshot = await getDocs(q);
   snapshot.forEach((doc) => {
-    expedientes.push(doc.data());
+    let newExp = doc.data()
+    newExp.id=doc.id
+    expedientes.push(newExp);
   });
 
   return expedientes;

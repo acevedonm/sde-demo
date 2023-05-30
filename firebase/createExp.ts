@@ -25,5 +25,8 @@ export default async function createExp(fields: FieldsUpload,PDF) {
 
   let ref = doc(db, "expedientes", documentId);
   uploadPDF(PDF,documentId)
+  console.log("creando expediente: ", ref )
+  console.log({ref})
+  console.log({fields})
   await setDoc(ref, fields);
 }
