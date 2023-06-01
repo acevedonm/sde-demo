@@ -33,7 +33,7 @@ import uploadData from "./upload-data";
         results.data.map((d) => {
           console.log("cargando DB... ")
           console.log("Subiendo datos de expediente: ",d)
-          uploadData(d)
+          //uploadData(d)
           console.log({d})
           console.log("Expediente subido correctamente")
           rowsArray.push(Object.keys(d));

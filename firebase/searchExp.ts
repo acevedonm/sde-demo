@@ -85,11 +85,12 @@ const getData = async (
 
   const q = query(
     collection(db, "expedientes"),
-    where("starter", "==", starter),
+    fieldsSearch.starter ? where("starter", "==", starter) : null,
     where("prefijo", "==", prefijo),
     where("num", "==", num),
     where("year", "==", year),
-    where("extension", "==", extension)
+    where("extension", "==", extension),
+    
   );
   const snapshot = await getDocs(q);
   snapshot.forEach((doc) => {

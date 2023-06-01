@@ -205,7 +205,7 @@ export default function Search() {
           >
             Buscar
           </Button>
-          <Button color="primary" variant="contained" onClick={verTodos}>
+          <Button disabled color="primary" variant="contained" onClick={() =>console.log("disabled")}>
             Ver Todos
           </Button>
         </Box>
