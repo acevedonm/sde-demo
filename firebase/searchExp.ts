@@ -20,27 +20,26 @@ export default async function searchExp (fieldsSearch) {
  async function findWhere (fieldsSearch) {
 
   const { starter, num, year, extension }: FieldsUpload = fieldsSearch;
+  let qb = query(
+    collection(db, "expedientes")
+  );
   const expedientes = [];
 
-  let conditionalStarter: QueryConstraint = starter 
-? where("starter", "==", starter) 
-: null
+  if (starter) {
+    qb = query(qb, where("starter", "==", starter));
+  }
 
-let conditionalYear: QueryConstraint = year 
-? where("year", "==", year) 
-: null
+  if (num) {
+    qb = query(qb, where("num", "==", num));
+  }
 
-let conditionalNum: QueryConstraint = num 
-? where("num", "==", num) 
-: null
+  if (year) {
+    qb = query(qb, where("year", "==", year));
+  }
 
-let conditionalExtension: QueryConstraint = extension 
-? where("extension", "==", extension) 
-: null
-
-  const qb = query(
-    collection(db, "expedientes"),conditionalStarter,conditionalYear,conditionalNum,conditionalExtension
-  );
+    if (extension) {
+    qb = query(qb, where("extension", "==", extension));
+  }
 
   const snapshot = await getDocs(qb);
   snapshot.forEach((doc) => {
