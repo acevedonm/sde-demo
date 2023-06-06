@@ -18,7 +18,6 @@ import { useRouter } from "next/router";
 const pages = ["Buscador", "Carga de Expedientes", "Administracion "];
 const settings = ["Perfil", "Configuracion", "Cerrar Sesión"];
 
-console.log(process.env.API_KEY)
 
 const auth = getAuth(firebaseApp);
 

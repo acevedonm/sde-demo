@@ -22,6 +22,5 @@ import {
 
    const storageRef = ref(storage, `expedientes/${id}.pdf`)
    const snapshot = await uploadBytes(storageRef, pdf)
-   console.log(snapshot)
   }
   

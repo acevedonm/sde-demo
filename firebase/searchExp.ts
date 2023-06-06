@@ -4,98 +4,47 @@ import {
   getDocs,
   query,
   where,
-  WhereFilterOp,
+  QueryConstraint,
 } from "firebase/firestore";
 import FieldsUpload from "../src/interfaces/fieldsUpload";
 import firebaseApp from "./client";
 import _ from "lodash";
 
-interface Expediente {
-  starter: string;
-  prefijo: string;
-  num: string;
-  year: string;
-  extension: string;
-}
 
 const db = getFirestore(firebaseApp);
 
 export default async function searchExp (fieldsSearch) {
-  const { starter, prefijo, num, year, extension }: FieldsUpload = fieldsSearch;
-  let expedientesArray = [];
-
-  if (starter) {
-    expedientesArray = _.concat(
-      expedientesArray,
-      await getData("expedientes", "starter", starter, "==")
-    );
-  }
-
-  if (num) {
-    expedientesArray = _.concat(
-      expedientesArray,
-      await getData("expedientes", "num", num, "==")
-    );
-  }
-
-  if (year) {
-    expedientesArray = _.concat(
-      expedientesArray,
-      await getData("expedientes", "year", year, "==")
-    );
-  }
-
-  if (extension) {
-    expedientesArray = _.concat(
-      expedientesArray,
-      await getData("expedientes", "extension", extension, "==")
-    );
-  }
-
-  return await _.uniqWith(expedientesArray, _.isEqual);
+  return await findWhere(fieldsSearch)
 }
 
-
-//hace una busqueda con wheres or (muy costosa)
-const getData = async (
-  col: string,
-  field: string,
-  value: string,
-  operator: WhereFilterOp
-) => {
-  const response = [];
-  const q = query(collection(db, col), where(field, operator, value));
-  const snapshot = await getDocs(q);
-  snapshot.forEach((doc) => {
-    const o = doc.data();
-    o["id"] = doc.id;
-    response.push(o);
-  });
-
-  return response;
-};
-
-
-
-//hace una busqueda con wheres and
  async function findWhere (fieldsSearch) {
-  console.log({ fieldsSearch });
-  const { starter, prefijo, num, year, extension }: FieldsUpload = fieldsSearch;
+
+  const { starter, num, year, extension }: FieldsUpload = fieldsSearch;
   const expedientes = [];
 
-  const q = query(
-    collection(db, "expedientes"),
-    fieldsSearch.starter ? where("starter", "==", starter) : null,
-    where("prefijo", "==", prefijo),
-    where("num", "==", num),
-    where("year", "==", year),
-    where("extension", "==", extension),
-    
+  let conditionalStarter: QueryConstraint = starter 
+? where("starter", "==", starter) 
+: null
+
+let conditionalYear: QueryConstraint = year 
+? where("year", "==", year) 
+: null
+
+let conditionalNum: QueryConstraint = num 
+? where("num", "==", num) 
+: null
+
+let conditionalExtension: QueryConstraint = extension 
+? where("extension", "==", extension) 
+: null
+
+  const qb = query(
+    collection(db, "expedientes"),conditionalStarter,conditionalYear,conditionalNum,conditionalExtension, where("PDF", "==", true)
   );
-  const snapshot = await getDocs(q);
+
+  const snapshot = await getDocs(qb);
   snapshot.forEach((doc) => {
     expedientes.push(doc.data());
   });
-  console.log({ expedientes });
   return expedientes;
 }

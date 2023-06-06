@@ -31,17 +31,13 @@ const storage = getStorage();
 function download(data: Expedientes) {
 
 
-  console.log({data})
   const gsReference = ref(storage, 'gs://bucket/images/stars.jpg');
 
-  //dewTM0VZee0qjwnLBEgX.
-  //${data.id}
 
   getDownloadURL(ref(storage, `expedientes/${data.id}.pdf`))
   .then((url) => {
     FilesService.downloadFile(url, "name"
     );
-    console.log({url})
     const xhr = new XMLHttpRequest();
     xhr.responseType = 'blob';
     xhr.onload = (event) => {
@@ -104,6 +100,7 @@ export default function Search() {
     setAlert(false);
     setLoading(true);
     const newData = await getAllExp();
+    console.log("cantidad de expedientes: ",newData.length)
     setLoading(false);
     setRows(newData);
     setEncontrado(true);
@@ -113,7 +110,7 @@ export default function Search() {
     //seteo nuevas rows setRows
     setLoading(true);
     const newData = await searchExp(fieldsSearch);
-
+  
     setRows(newData);
     setEncontrado(true);
     setLoading(false);
@@ -221,7 +218,7 @@ export default function Search() {
                 <TableHead>
                   <TableRow>
                     <TableCell>Iniciador</TableCell>
-                    <TableCell align="right">N° Expediente</TableCell>
+                    <TableCell align="right">N°Expediente</TableCell>
                     <TableCell align="right">Año </TableCell>
                     <TableCell align="right">Prefijo </TableCell>
                     <TableCell align="right">Extracto </TableCell>
