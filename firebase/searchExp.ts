@@ -39,7 +39,7 @@ let conditionalExtension: QueryConstraint = extension
 : null
 
   const qb = query(
-    collection(db, "expedientes"),conditionalStarter,conditionalYear,conditionalNum,conditionalExtension, where("PDF", "==", true)
+    collection(db, "expedientes"),conditionalStarter,conditionalYear,conditionalNum,conditionalExtension
   );
 
   const snapshot = await getDocs(qb);
