@@ -117,12 +117,12 @@ function ResponsiveAppBar() {
               >
                 <Typography textAlign="center">Carga de Expedientes</Typography>
               </MenuItem>
-              <MenuItem
+{/*               <MenuItem
                 key={"Administracion"}
                 onClick={() => handleRouter("dashboard")}
               >
                 <Typography textAlign="center">Administracion</Typography>
-              </MenuItem>
+              </MenuItem> */}
             </Menu>
           </Box>
 
@@ -171,7 +171,7 @@ function ResponsiveAppBar() {
             >
               carga de expediente
             </Button>
-            <Button
+{/*             <Button
               key={"Administracion"}
               component="a"
               href="/dashboard"
@@ -185,7 +185,7 @@ function ResponsiveAppBar() {
               }}
             >
               Administracion
-            </Button>
+            </Button> */}
           </Box>
 
           <Box sx={{ flexGrow: 0 }}>

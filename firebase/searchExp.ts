@@ -20,6 +20,10 @@ export default async function searchExp (fieldsSearch) {
  async function findWhere (fieldsSearch) {
 
   const { starter, num, year, extension }: FieldsUpload = fieldsSearch;
+
+  if (!starter && !num && !year && !extension) {
+    return [];
+  }
   let qb = query(
     collection(db, "expedientes")
   );
