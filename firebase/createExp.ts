@@ -14,17 +14,13 @@ import uploadPDF from "./uploadPDF";
 const db = getFirestore(firebaseApp);
 
 export default async function createExp(fields: FieldsUpload,PDF) {
-
   try {
-
     let documentId = doc(collection(db, "expedientes")).id;
     let ref = doc(db, "expedientes", documentId);
-    await uploadPDF(PDF,documentId)
+    await uploadPDF(PDF, documentId);
     await setDoc(ref, fields);
-   
   } catch (error) {
-    console.log("error en createExp: ", error)
-    return error
+    console.log("Error en createExp:", error);
+    return error;
   }
- 
 }

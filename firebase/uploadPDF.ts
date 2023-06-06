@@ -17,10 +17,16 @@ import {
   }
   
   const storage = getStorage(firebaseApp);
-  
-  export default async function uploadPDF (pdf,id) {
 
-   const storageRef = ref(storage, `expedientes/${id}.pdf`)
-   const snapshot = await uploadBytes(storageRef, pdf)
-  }
+
+  export default async function uploadPDF(pdf, id) {
+    const storageRef = ref(storage, `expedientes/${id}.pdf`);
   
+    try {
+      const snapshot = await uploadBytes(storageRef, pdf);
+      // Si la carga del PDF es exitosa, no es necesario hacer nada más
+    } catch (error) {
+      // Si ocurre un error en la carga del PDF, arrojamos una excepción
+      throw new Error("Error en la carga del PDF");
+    }
+  }

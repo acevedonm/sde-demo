@@ -10,23 +10,18 @@ import createExp from "../../firebase/createExp";
 import FieldsUpload from "../../src/interfaces/fieldsUpload";
 import uploadPDF from "../../firebase/uploadPDF";
 import { Expedientes } from "../../src/interfaces/expedientes";
+import DynamicAlert from "../../components/DynamicAlert";
 
 export interface State extends SnackbarOrigin {
   open: boolean;
 }
 
 export default function Upload() {
-  const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
-    props,
-    ref
-  ) {
-    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
-  });
-  
   const [open, setOpen] = React.useState(false);
-  
+
   const [error, setError] = React.useState(false);
-  const [PDF, setPDF] = React.useState({});
+  const [alertMessage, setAlertMessage] = React.useState("");
+  const [PDF, setPDF] = React.useState(null);
   const [namePDF, setNamePDF] = React.useState("");
   const [fields, setFields] = React.useState({
     starter: "",
@@ -36,46 +31,54 @@ export default function Upload() {
     extension: "",
   });
 
-
   const handleChangePDF = (event) => {
-    setPDF(event.target.files[0])
-    console.log(event)
-    setNamePDF(event.target.files[0].name)
-    console.log(event.target.files[0].name)
-  }
+    setPDF(event.target.files[0]);
+    setNamePDF(event.target.files[0].name);
+  };
   const handleSave = () => {
-    try {
-      const error = createExp(fields,PDF);
-      if(error) throw new Error()
-      setOpen(true);
-      clearFields()
-    } catch (error) {
-      console.log("error en handle save: ",error)
-      setError(true)
+    if (!PDF) {
+      setAlertMessage("No se ha seleccionado ningún PDF.");
+      setError(true);
+      return;
     }
 
+    // Verificar si faltan campos en 'fields'
+    if (
+      !fields.starter ||
+      !fields.prefijo ||
+      !fields.num ||
+      !fields.year ||
+      !fields.extension
+    ) {
+      setAlertMessage("Faltan campos obligatorios.");
+      setError(true);
+      return;
+    }
 
+    try {
+      createExp(fields, PDF);
+      setOpen(true);
+
+      setAlertMessage("¡Expediente cargado con éxito!");
+      clearFields();
+    } catch (error) {
+      console.log("error en handle save: ", error);
+      setError(true);
+    }
   };
 
-  const clearFields = () =>{
+  const clearFields = () => {
     setFields({
       starter: "",
       prefijo: "4069",
       num: "",
       year: "",
       extension: "",
-    })
-  }
-  const handleClose = (
-    event?: React.SyntheticEvent | Event,
-    reason?: string
-  ) => {
-    if (reason === "clickaway") {
-      return;
-    }
-
+    });
+  };
+  const handleClose = () => {
     setOpen(false);
-    setError(false)
+    setError(false);
   };
   const changeStarter = (event) => {
     setFields({
@@ -109,34 +112,18 @@ export default function Upload() {
     <>
       {" "}
       <Container>
-        <Snackbar
-          anchorOrigin={{ vertical: "top", horizontal: "center" }}
+        <DynamicAlert
           open={open}
-          autoHideDuration={3000}
-          onClose={handleClose}
-        >
-          <Alert
-            onClose={handleClose}
-            severity="success"
-            sx={{ width: "100%" }}
-          >
-            Expediente cargado con éxito!
-          </Alert>
-        </Snackbar>
-        <Snackbar
-          anchorOrigin={{ vertical: "top", horizontal: "center" }}
+          severity="success"
+          message={alertMessage}
+          handleClose={handleClose}
+        />
+        <DynamicAlert
           open={error}
-          autoHideDuration={3000}
-          onClose={handleClose}
-        >
-          <Alert
-            onClose={handleClose}
-            severity="error"
-            sx={{ width: "100%" }}
-          >
-            Ocurrio un error!
-          </Alert>
-        </Snackbar>
+          severity="error"
+          message={alertMessage}
+          handleClose={handleClose}
+        />
         <Box
           component="form"
           sx={{
@@ -197,13 +184,18 @@ export default function Upload() {
           <Stack direction="row" alignItems="center" spacing={2}>
             <Button variant="contained" component="label" color="info">
               Cargar PDF
-              <input hidden accept="image/*,.pdf" multiple type="file" onChange={handleChangePDF}/>
+              <input
+                hidden
+                accept="image/*,.pdf"
+                multiple
+                type="file"
+                onChange={handleChangePDF}
+              />
             </Button>
-          
+
             <Button variant="contained" component="label" onClick={handleSave}>
               Guardar
             </Button>
-            
           </Stack>
           {namePDF != "" ? <strong>{namePDF}</strong> : null}
         </Box>
