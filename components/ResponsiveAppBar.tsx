@@ -76,7 +76,7 @@ function ResponsiveAppBar() {
     setAnchorElUser(null);
   };
   return (
-    <AppBar position="static">
+    <AppBar position="static" sx={{ marginBottom: "16px" }}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>

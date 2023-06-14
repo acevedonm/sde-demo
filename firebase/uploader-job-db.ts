@@ -20,28 +20,33 @@ import uploadData from "./upload-data";
   
   const storage = getStorage(firebaseApp);
   
-  export default async function uploaderJob (event) {
+  export default async function uploaderJob (file, setLoading) {
 
-    Papa.parse(event.target.files[0], {
+
+    Papa.parse(file, {
       header: true,
       skipEmptyLines: true,
       complete: function (results) {
         const rowsArray = [];
         const valuesArray = [];
-
+        let indexToUse;
         // Iterating data to get column name and their values
-        results.data.map((d) => {
+        results.data.map((d,index) => {
+          indexToUse = index;
           console.log("cargando DB... ")
           console.log("Subiendo datos de expediente: ",d)
-          //uploadData(d)
+          d.file=""
+          uploadData(d)
           console.log({d})
           console.log("Expediente subido correctamente")
           rowsArray.push(Object.keys(d));
           valuesArray.push(Object.values(d));
         });
+
+        console.log("registros guardados: "+indexToUse)
+        setLoading(false)
       },
     });
-
 
   }
   

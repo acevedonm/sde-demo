@@ -27,6 +27,13 @@
   export default async function uploadData(data) {
     let documentId = doc(collection(db, "expedientes")).id;
     let ref = doc(db, "expedientes", documentId);
-    await setDoc(ref, data);
+    try {
+      await setDoc(ref, data);
+    } catch (error) {
+      console.log("error al crear documento firebase")
+      
+      console.log(error)
+    }
+
   }
   

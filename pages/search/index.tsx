@@ -21,6 +21,7 @@ import LinearProgress from "@mui/material/LinearProgress";
 import searchExp from "../../firebase/searchExp";
 import { Expedientes } from "../../src/interfaces/expedientes";
 import { getStorage, ref, getDownloadURL } from "firebase/storage";
+import DynamicTable from "../../components/DynamicTable";
 
 
 const storage = getStorage();
@@ -68,15 +69,15 @@ export default function Search() {
 
   const [alert, setAlert] = useState(false);
   const [rows, setRows] = useState([]);
+  const [headers, setHeaders] = useState([]);
 
     const handlerGetAllExp =  useCallback(async () => {
     const data = await getAllExp();
     setRows(data);
+    let headers = Object.keys(data[0]);
+    headers.shift()
+    setHeaders(headers)
   }, []);
-
-   useEffect(() => {
-    handlerGetAllExp();
-  }, [handlerGetAllExp]);
 
   function IconAlerts() {
     return (
@@ -103,6 +104,9 @@ export default function Search() {
     console.log("cantidad de expedientes: ",newData.length)
     setLoading(false);
     setRows(newData);
+    let headers = Object.keys(newData[0]);
+    headers.shift()
+    setHeaders(headers)
     setEncontrado(true);
   };
 
@@ -112,6 +116,9 @@ export default function Search() {
     const newData = await searchExp(fieldsSearch);
   
     setRows(newData);
+    let headers = Object.keys(newData[0]);
+    headers.shift()
+    setHeaders(headers)
     setEncontrado(true);
     setLoading(false);
     if (newData.length == 0) {
@@ -212,44 +219,9 @@ export default function Search() {
           </Box>
         )}
         {encontrado && !loading ? (
-          <>
-            <TableContainer component={Paper}>
-              <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                <TableHead>
-                  <TableRow>
-                    <TableCell>Iniciador</TableCell>
-                    <TableCell align="right">N°Expediente</TableCell>
-                    <TableCell align="right">Año </TableCell>
-                    <TableCell align="right">Prefijo </TableCell>
-                    <TableCell align="right">Extracto </TableCell>
-                    <TableCell align="right">Descargar </TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {rows?.map((row) => (
-                    <TableRow
-                    key = {row.id}
-                      sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                    >
-                      <TableCell component="th" scope="row">
-                        {row.starter}
-                      </TableCell>
-                      <TableCell align="right">{row.num}</TableCell>
-                      <TableCell align="right">{row.year}</TableCell>
-                      <TableCell align="right">{row.prefijo}</TableCell>
-                      <TableCell align="right">{row.extension}</TableCell>
-                      <TableCell align="right">
-                        <IconButton onClick={() => download(row)}>
-                          <FileDownloadIcon></FileDownloadIcon>
-                        </IconButton>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </>
+               <DynamicTable data={rows} headers={headers}></DynamicTable>
         ) : null}
+
       </Container>
     </>
   );
