@@ -2,14 +2,11 @@ import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
-import Snackbar, { SnackbarOrigin } from "@mui/material/Snackbar";
+import { SnackbarOrigin } from "@mui/material/Snackbar";
 import * as React from "react";
-import MuiAlert, { AlertProps } from "@mui/material/Alert";
 import { Container } from "@mui/material";
 import createExp from "../../firebase/createExp";
 import FieldsUpload from "../../src/interfaces/fieldsUpload";
-import uploadPDF from "../../firebase/uploadPDF";
-import { Expedientes } from "../../src/interfaces/expedientes";
 import DynamicAlert from "../../components/DynamicAlert";
 
 export interface State extends SnackbarOrigin {
@@ -23,19 +20,28 @@ export default function Upload() {
   const [alertMessage, setAlertMessage] = React.useState("");
   const [PDF, setPDF] = React.useState(null);
   const [namePDF, setNamePDF] = React.useState("");
-  const [fields, setFields] = React.useState({
-    starter: "",
-    prefijo: "4069",
+  const [fields, setFields] = React.useState<FieldsUpload>({
+    prefix: "4069",
     num: "",
     year: "",
-    extension: "",
+    ext: "",
+    starter: "",
+    extract: "",
+    starterStreet: "",
+    starterNum: "",
+    starterLocation: "",
+    starterCp: "",
+    date: "",
+    type: "",
+    code: "",
+    status: "",
   });
 
   const handleChangePDF = (event) => {
     setPDF(event.target.files[0]);
     setNamePDF(event.target.files[0].name);
   };
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!PDF) {
       setAlertMessage("No se ha seleccionado ningún PDF.");
       setError(true);
@@ -45,10 +51,10 @@ export default function Upload() {
     // Verificar si faltan campos en 'fields'
     if (
       !fields.starter ||
-      !fields.prefijo ||
+      !fields.prefix ||
       !fields.num ||
       !fields.year ||
-      !fields.extension
+      !fields.ext
     ) {
       setAlertMessage("Faltan campos obligatorios.");
       setError(true);
@@ -56,13 +62,13 @@ export default function Upload() {
     }
 
     try {
-      createExp(fields, PDF);
-      setOpen(true);
-
+      await createExp(fields, PDF);
       setAlertMessage("¡Expediente cargado con éxito!");
+      setOpen(true);
       clearFields();
     } catch (error) {
-      console.log("error en handle save: ", error);
+      console.log("Error en handleSave:", error);
+      setAlertMessage("Error al cargar Archivo");
       setError(true);
     }
   };
@@ -70,10 +76,10 @@ export default function Upload() {
   const clearFields = () => {
     setFields({
       starter: "",
-      prefijo: "4069",
+      prefix: "4069",
       num: "",
       year: "",
-      extension: "",
+      ext: "",
     });
   };
   const handleClose = () => {
@@ -104,7 +110,7 @@ export default function Upload() {
   const changeExtension = (event) => {
     setFields({
       ...fields,
-      extension: event.target.value,
+      ext: event.target.value,
     });
   };
 
@@ -146,7 +152,7 @@ export default function Upload() {
               label="Prefijo"
               defaultValue="4069"
               type="search"
-              value={fields.prefijo}
+              value={fields.prefix}
             />
             <TextField
               id="outlined-search"
@@ -169,7 +175,7 @@ export default function Upload() {
               label="Extension"
               type="search"
               onChange={changeExtension}
-              value={fields.extension}
+              value={fields.ext}
             />
           </div>
         </Box>

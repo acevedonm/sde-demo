@@ -25,7 +25,18 @@ const theme = createTheme({
     },
   },
   typography: {
-    fontFamily: roboto.style.fontFamily,
+    fontFamily: "Roboto, Helvetica, Arial, sans-serif",
+  },
+  components: {
+    MuiTextField: {
+      styleOverrides: {
+        root: {
+          "&.required-field .MuiInputBase-root": {
+            border: "1px solid red !important",
+          },
+        },
+      },
+    },
   },
 });
 
