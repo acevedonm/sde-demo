@@ -17,7 +17,7 @@ export default async function createExp(fields: FieldsUpload,PDF) {
   try {
     let documentId = doc(collection(db, "expedientes_pruebav2")).id;
     let ref = doc(db, "expedientes_pruebav2", documentId);
-    await uploadPDF(PDF, `${fields.prefix}-${fields.num}-${fields.year}`);
+    await uploadPDF(PDF, `${fields.prefix}-${fields.num}-${fields.year}.pdf`);
     await setDoc(ref, fields);
   } catch (error) {
     console.log("Error en createExp:", error);

@@ -1,5 +1,5 @@
 export class Expedientes {
-    id: number;
+    id: string;
     prefix: string;
     num: string;
     year: string;
@@ -7,10 +7,10 @@ export class Expedientes {
     extract?: string
     starter: string;
    starterStreet?: string;
-   starterNum?: number
+   starterNum?: string
    starterLocation?: string;
-   starterCp?: number;
-   date?: Date;
+   starterCp?: string;
+   date?: string;
    type?: string;
    code?: string;
    status?: string;

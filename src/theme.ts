@@ -25,7 +25,7 @@ const theme = createTheme({
     },
   },
   typography: {
-    fontFamily: "Roboto, Helvetica, Arial, sans-serif",
+    fontFamily: roboto.style.fontFamily,
   },
   components: {
     MuiTextField: {

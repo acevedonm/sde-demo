@@ -12,9 +12,8 @@ import {
   const storage = getStorage(firebaseApp);
 
 
-  export default async function uploadPDF(pdf, path) {
-    const storageRef = ref(storage, `expedientes/${path}.pdf`);
-  
+  export default async function uploadPDF(pdf, fileName) {
+    const storageRef = ref(storage, `expedientes/${fileName}`);
     try {
       const snapshot = await uploadBytes(storageRef, pdf);
       // Si la carga del PDF es exitosa, no es necesario hacer nada más

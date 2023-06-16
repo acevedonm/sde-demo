@@ -7,8 +7,7 @@ import * as React from "react";
 import MuiAlert, { AlertProps } from "@mui/material/Alert";
 import { Container } from "@mui/material";
 import createExp from "../../firebase/createExp";
-import FieldsUpload from "../../src/interfaces/fieldsUpload";
-import uploadPDF from "../../firebase/uploadPDF";
+
 
 export interface State extends SnackbarOrigin {
   open: boolean;

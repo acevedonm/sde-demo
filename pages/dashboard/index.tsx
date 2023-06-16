@@ -1,35 +1,39 @@
-import { useEffect, useState } from "react";
-import { Box, Button, Container, LinearProgress } from "@mui/material";
+import { useState } from "react";
+import { Box, Button, CircularProgress, Container, LinearProgress } from "@mui/material";
 import { Card, CardContent, Typography, CardActions } from "@mui/material";
 import { Grid } from "@mui/material";
 
 import uploaderJob from "../../firebase/uploader-job-db";
+import DynamicDialog from "../../components/DynamicDialog";
+import uploadMassivePDF from "../../firebase/uploader-job-pdf";
+import uploadPDF from "../../firebase/uploadPDF";
 
 export default function Dashboard() {
   const [loading, setLoading] = useState(false);
   const [progress, setProgress] = useState(0);
   const [selectedFile, setSelectedFile] = useState(null);
 
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setProgress((oldProgress) => {
-        if (oldProgress === 100) {
-          return 0;
-        }
-        const diff = Math.random() * 10;
-        return Math.min(oldProgress + diff, 100);
-      });
-    }, 500);
+  const [selectedDir, setSelectedDir] = useState(null); //dice dir pero son varios pdf
 
-    return () => {
-      clearInterval(timer);
-    };
-  }, []);
+  const [dialogUploadingOpen, setDialogUploadingOpen] = useState(null);
+
+  const handleFileListPDF = (event) => {
+    setSelectedDir(event.target.files);
+  };
+  const handleMassivePDF = async () => {
+    setDialogUploadingOpen(true);
+    for (const file of selectedDir) {
+      console.log(file)
+      console.log(file.name)
+      await uploadPDF(file, file.name);
+    }
+    setDialogUploadingOpen(false);
+  };
 
   const [descriptions, setDescriptions] = useState([
     "Carga una archivo CSV en la base de datos",
-    "Elije una carpeta para cargar todos los archivos de tipo PDF",
-    "Proximamente",
+    "Elije un PDF para cargarlo en la base de datos",
+    "Seleccione una carpeta con archivos PDF para cargarlos masivamente a la base de datos",
   ]);
 
   const handlerUploadJob = (event) => {
@@ -76,7 +80,9 @@ export default function Dashboard() {
                   />
                 </Button>
                 <Button
-                size="small" component="label" variant="contained"
+                  size="small"
+                  component="label"
+                  variant="contained"
                   onClick={() => uploaderJob(selectedFile, setLoading)}
                   disabled={!selectedFile}
                 >
@@ -86,17 +92,22 @@ export default function Dashboard() {
             </Card>
           </Grid>
           <Grid item xs={12} md={4}>
-          <Card sx={{ minHeight: 150 }}>
+            <Card sx={{ minHeight: 150 }}>
               <CardContent>
                 <Typography variant="body2">{descriptions[1]}</Typography>
               </CardContent>
               <CardActions sx={{ justifyContent: "flex-end" }}>
-                <Button size="small" component="label" variant="contained">
+                <Button
+                  size="small"
+                  component="label"
+                  variant="contained"
+                  disabled={true}
+                >
                   Cargar PDF
                   <input
                     hidden
                     multiple
-                    accept=".csv"
+                    accept=".pdf"
                     type="file"
                     onChange={handlerUploadPDFJob}
                   />
@@ -105,43 +116,40 @@ export default function Dashboard() {
             </Card>
           </Grid>
           <Grid item xs={12} md={4}>
-          <Card sx={{ minHeight: 150 }}>
+            <Card sx={{ minHeight: 150 }}>
               <CardContent>
                 <Typography variant="body2">{descriptions[2]}</Typography>
               </CardContent>
               <CardActions sx={{ justifyContent: "flex-end" }}>
                 <Button size="small" component="label" variant="contained">
-                  new button
+                  Seleccionar Varios PDF
                   <input
                     hidden
                     multiple
-                    accept=".csv"
+                    accept=".pdf"
+                    onChange={handleFileListPDF}
                     type="file"
-                    onChange={handlerUploadJob}
+                    id="file-pdf-massive"
                   />
                 </Button>
-              </CardActions>
-            </Card>
-          </Grid>
-          <Grid item xs={12} md={4}>
-          <Card sx={{ minHeight: 150 }}>
-              <CardContent>
-                <Typography variant="body2">{descriptions[2]}</Typography>
-              </CardContent>
-              <CardActions sx={{ justifyContent: "flex-end" }}>
-                <Button size="small" component="label" variant="contained">
-                  new button
-                  <input
-                    hidden
-                    multiple
-                    accept=".csv"
-                    type="file"
-                    onChange={handlerUploadJob}
-                  />
+
+                <Button
+                  size="small"
+                  component="label"
+                  variant="contained"
+                  onClick={handleMassivePDF}
+                  disabled={!selectedDir}
+                >
+                  Carga Masiva de PDF
                 </Button>
               </CardActions>
+              <DynamicDialog
+                title="Cargando PDF's Massivamente"
+                open={dialogUploadingOpen}
+              ><CircularProgress /></DynamicDialog>
             </Card>
           </Grid>
+
         </Grid>
       )}
     </Container>

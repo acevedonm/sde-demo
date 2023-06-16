@@ -7,6 +7,7 @@ import {
   TableBody,
   Button,
   IconButton,
+  TablePagination,
 } from "@mui/material";
 
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
@@ -31,16 +32,22 @@ const translations = {
   code: "codigo",
 };
 
-function DynamicTable({ data, headers, buttonAction = (item?) => {} }) {
+function DynamicTable({ data, headers, buttonAction = (item?) => {} , currentPage, onPageChange }) {
   if (!data || data.length === 0) {
     return <div>No hay datos disponibles.</div>;
   }
+
+
+  const pageSize = 10; // Número de elementos por página
+  const totalPages = Math.ceil(data.length / pageSize);
+
 
   // Mapeo de los encabezados para traducirlos
   const translatedHeaders = headers.map((header) =>
     translations[header].toUpperCase()
   );
 
+  //Esto se usa por si recibo una accion para ejecutar en el boton de la tabla
   const handleButtonClick = (item) => {
     buttonAction(item);
   };
@@ -61,7 +68,6 @@ function DynamicTable({ data, headers, buttonAction = (item?) => {} }) {
             <TableRow key={index}>
               <TableCell align="right">
                 <IconButton
-              
                   onClick={() => handleButtonClick(item)}
                 >
                   <FileDownloadIcon></FileDownloadIcon>
@@ -74,6 +80,14 @@ function DynamicTable({ data, headers, buttonAction = (item?) => {} }) {
           ))}
         </TableBody>
       </Table>
+      <TablePagination
+        rowsPerPageOptions={[]}
+        component="div"
+        count={data.length}
+        rowsPerPage={pageSize}
+        page={currentPage}
+        onPageChange={onPageChange}
+      />
     </div>
   );
 }

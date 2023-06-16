@@ -16,7 +16,7 @@ import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import Stack from "@mui/material/Stack";
 import Alert from "@mui/material/Alert";
 import AlertTitle from "@mui/material/AlertTitle";
-import getAllExp from "../../firebase/getAllExp";
+import {getAllExp, getExpedientesPorPagina} from "../../firebase/getAllExp";
 import LinearProgress from "@mui/material/LinearProgress";
 import searchExp from "../../firebase/searchExp";
 import { Expedientes } from "../../src/interfaces/expedientes";
@@ -100,8 +100,7 @@ export default function Search() {
     //seteo nuevas rows setRows
     setAlert(false);
     setLoading(true);
-    const newData = await getAllExp();
-    console.log("cantidad de expedientes: ",newData.length)
+    const newData = await getExpedientesPorPagina(0,10);
     setLoading(false);
     setRows(newData);
     let headers = Object.keys(newData[0]);
@@ -219,7 +218,7 @@ export default function Search() {
           </Box>
         )}
         {encontrado && !loading ? (
-               <DynamicTable data={rows} headers={headers}></DynamicTable>
+               <DynamicTable data={rows} headers={headers} currentPage={0} onPageChange={()=>console.log("change page")} buttonAction={() => console.log("donwload")} ></DynamicTable>
         ) : null}
 
       </Container>

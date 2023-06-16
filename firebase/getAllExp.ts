@@ -9,13 +9,6 @@ import {
 } from "firebase/firestore";
 import firebaseApp from "./client";
 
-interface Expediente {
-  starter: string;
-  prefijo: string;
-  num: string;
-  year: string;
-  extension: string;
-}
 
 const db = getFirestore(firebaseApp);
 
@@ -34,12 +27,12 @@ const db = getFirestore(firebaseApp);
  */
 
 
-export default async function getAllExp () {
+export async function getAllExp () {
   return  getExpedientesPorPagina(0);
 }
 
 
-async function getExpedientesPorPagina(pageNumber = 0, pageSize = 10) {
+export async function getExpedientesPorPagina(pageNumber: number = 0, pageSize: number = 10) {
   const startAfterDocument = pageNumber > 1 ? (pageNumber - 1) * pageSize : null;
 
   console.log({startAfterDocument})
