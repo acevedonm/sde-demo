@@ -4,7 +4,6 @@ import {
   getDocs,
   query,
   where,
-  QueryConstraint,
 } from "firebase/firestore";
 import FieldsUpload from "../src/interfaces/fieldsUpload";
 import firebaseApp from "./client";
@@ -19,9 +18,9 @@ export default async function searchExp (fieldsSearch) {
 
  async function findWhere (fieldsSearch) {
 
-  const { starter, num, year, extension }: FieldsUpload = fieldsSearch;
+  const { starter, num, year, ext }: FieldsUpload = fieldsSearch;
 
-  if (!starter && !num && !year && !extension) {
+  if (!starter && !num && !year && !ext) {
     return [];
   }
   let qb = query(
@@ -41,8 +40,8 @@ export default async function searchExp (fieldsSearch) {
     qb = query(qb, where("year", "==", year));
   }
 
-    if (extension) {
-    qb = query(qb, where("extension", "==", extension));
+    if (ext) {
+    qb = query(qb, where("extension", "==", ext));
   }
 
   const snapshot = await getDocs(qb);

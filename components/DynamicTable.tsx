@@ -52,6 +52,7 @@ function DynamicTable({ data, headers, buttonAction = (item?) => {} , currentPag
     buttonAction(item);
   };
 
+  console.log(translatedHeaders)
   return (
     <div style={{ maxWidth: "100%", overflowX: "auto" }}>
       <Table style={{ minWidth: 650 }}>

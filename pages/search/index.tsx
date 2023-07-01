@@ -30,12 +30,7 @@ const storage = getStorage();
 
 
 function download(data: Expedientes) {
-
-
-  const gsReference = ref(storage, 'gs://bucket/images/stars.jpg');
-
-
-  getDownloadURL(ref(storage, `expedientes/${data.id}.pdf`))
+  getDownloadURL(ref(storage, `expedientes/2-2020.pdf`))
   .then((url) => {
     FilesService.downloadFile(url, "name"
     );
@@ -46,14 +41,10 @@ function download(data: Expedientes) {
     };
     xhr.open('GET', url);
     xhr.send();
-    const img = document.getElementById('myimg');
-    img.setAttribute('src', url);
   })
   .catch((error) => {
    console.log({error})
   });
-
-
 }
 
 export default function Search() {
@@ -71,13 +62,6 @@ export default function Search() {
   const [rows, setRows] = useState([]);
   const [headers, setHeaders] = useState([]);
 
-    const handlerGetAllExp =  useCallback(async () => {
-    const data = await getAllExp();
-    setRows(data);
-    let headers = Object.keys(data[0]);
-    headers.shift()
-    setHeaders(headers)
-  }, []);
 
   function IconAlerts() {
     return (
@@ -100,12 +84,14 @@ export default function Search() {
     //seteo nuevas rows setRows
     setAlert(false);
     setLoading(true);
-    const newData = await getExpedientesPorPagina(0,10);
+    const newData = await getExpedientesPorPagina(0,10,true);
     setLoading(false);
     setRows(newData);
-    let headers = Object.keys(newData[0]);
-    headers.shift()
-    setHeaders(headers)
+    if(newData[0]){
+      let head = Object.keys(newData[0]);
+      head.shift()
+      setHeaders(head)
+    }
     setEncontrado(true);
   };
 
@@ -113,11 +99,13 @@ export default function Search() {
     //seteo nuevas rows setRows
     setLoading(true);
     const newData = await searchExp(fieldsSearch);
-  
+
     setRows(newData);
-    let headers = Object.keys(newData[0]);
-    headers.shift()
-    setHeaders(headers)
+    if(newData[0]){
+      let head = Object.keys(newData[0]);
+      head.shift()
+      setHeaders(head)
+    }
     setEncontrado(true);
     setLoading(false);
     if (newData.length == 0) {
@@ -218,7 +206,7 @@ export default function Search() {
           </Box>
         )}
         {encontrado && !loading ? (
-               <DynamicTable data={rows} headers={headers} currentPage={0} onPageChange={()=>console.log("change page")} buttonAction={() => console.log("donwload")} ></DynamicTable>
+               <DynamicTable data={rows} headers={headers} currentPage={0} onPageChange={() => console.log("page change")} buttonAction={download} ></DynamicTable>
         ) : null}
 
       </Container>

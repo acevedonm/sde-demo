@@ -42,16 +42,20 @@ export async function getAllExp () {
 * La función getDocumentReference se utiliza para obtener la referencia al documento en base al índice proporcionado. Esto se logra obteniendo todos los documentos de la colección y seleccionando el documento en el índice específico. 
 * @param {number} pageNumber - numero de paginas
 */
-export async function getExpedientesPorPagina(pageNumber: number = 0, pageSize: number = 10) {
+export async function getExpedientesPorPagina(pageNumber: number = 0, pageSize: number = 10,  actives: boolean = false ) {
+  console.log("getExpedientesPorPagina")
   const startAfterDocument = pageNumber > 1 ? (pageNumber - 1) * pageSize : null;
-
-  console.log({ startAfterDocument });
 
   let pageQuery = query(collection(db, "expedientes"), limit(pageSize));
 
   if (startAfterDocument) {
     const startAfterDocRef = await getDocumentReference(startAfterDocument);
     pageQuery = query(pageQuery, startAfter(startAfterDocRef));
+  }
+
+  console.log(actives)
+  if (actives) {
+    pageQuery = query(pageQuery, where("file", "!=", ""));
   }
 
   const pageSnapshot = await getDocs(pageQuery);
