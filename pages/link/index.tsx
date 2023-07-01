@@ -7,6 +7,7 @@ import * as React from "react";
 import MuiAlert, { AlertProps } from "@mui/material/Alert";
 import { Container } from "@mui/material";
 import createExp from "../../firebase/createExp";
+import FieldsUpload from "../../src/interfaces/fieldsUpload";
 
 
 export interface State extends SnackbarOrigin {
@@ -23,12 +24,21 @@ export default function Link() {
   
   const [open, setOpen] = React.useState(false);
   const [PDF, setPDF] = React.useState({});
-  const [fields, setFields] = React.useState({
-    starter: "",
-    prefijo: "4069",
+  const [fields, setFields] = React.useState<FieldsUpload>({
+    prefix: "4069",
     num: "",
     year: "",
-    extension: "",
+    ext: "",
+    starter: "",
+    extract: "",
+    starterStreet: "",
+    starterNum: "",
+    starterLocation: "",
+    starterCp: "",
+    date: "",
+    type: "",
+    code: "",
+    status: "",
   });
 
   const handleClick = () => {
@@ -69,7 +79,7 @@ export default function Link() {
   const changeExtension = (event) => {
     setFields({
       ...fields,
-      extension: event.target.value,
+      ext: event.target.value,
     });
   };
 
