@@ -16,35 +16,30 @@ import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import Stack from "@mui/material/Stack";
 import Alert from "@mui/material/Alert";
 import AlertTitle from "@mui/material/AlertTitle";
-import {getAllExp, getExpedientesPorPagina} from "../../firebase/getAllExp";
+import { getAllExp, getExpedientesPorPagina } from "../../firebase/getAllExp";
 import LinearProgress from "@mui/material/LinearProgress";
 import searchExp from "../../firebase/searchExp";
 import { Expedientes } from "../../src/interfaces/expedientes";
 import { getStorage, ref, getDownloadURL } from "firebase/storage";
 import DynamicTable from "../../components/DynamicTable";
 
-
 const storage = getStorage();
-
-
-
 
 function download(data: Expedientes) {
   getDownloadURL(ref(storage, `expedientes/2-2020.pdf`))
-  .then((url) => {
-    FilesService.downloadFile(url, "name"
-    );
-    const xhr = new XMLHttpRequest();
-    xhr.responseType = 'blob';
-    xhr.onload = (event) => {
-      const blob = xhr.response;
-    };
-    xhr.open('GET', url);
-    xhr.send();
-  })
-  .catch((error) => {
-   console.log({error})
-  });
+    .then((url) => {
+      FilesService.downloadFile(url, "name");
+      const xhr = new XMLHttpRequest();
+      xhr.responseType = "blob";
+      xhr.onload = (event) => {
+        const blob = xhr.response;
+      };
+      xhr.open("GET", url);
+      xhr.send();
+    })
+    .catch((error) => {
+      console.log({ error });
+    });
 }
 
 export default function Search() {
@@ -54,14 +49,13 @@ export default function Search() {
     prefijo: "4069",
     num: "",
     year: "",
-    extension: "",
+    ext: "",
   });
   const [loading, setLoading] = useState(false);
 
   const [alert, setAlert] = useState(false);
   const [rows, setRows] = useState([]);
   const [headers, setHeaders] = useState([]);
-
 
   function IconAlerts() {
     return (
@@ -84,14 +78,29 @@ export default function Search() {
     //seteo nuevas rows setRows
     setAlert(false);
     setLoading(true);
-    const newData = await getExpedientesPorPagina(0,10,true);
+    //cambiar el siguiente false por un true para que filtre solo los que tienen pdf
+    const newData = await getExpedientesPorPagina(0, 10, true);
     setLoading(false);
     setRows(newData);
-    if(newData[0]){
-      let head = Object.keys(newData[0]);
-      head.shift()
-      setHeaders(head)
-    }
+
+    let head = [
+      "prefix",
+      "date",
+      "starterNum",
+      "num",
+      "type",
+      "ext",
+      "starter",
+      "year",
+      "starterLocation",
+      "starterCp",
+      "extract",
+      "starterStreet",
+      "status",
+      "code",
+    ];
+    setHeaders(head);
+
     setEncontrado(true);
   };
 
@@ -101,11 +110,25 @@ export default function Search() {
     const newData = await searchExp(fieldsSearch);
 
     setRows(newData);
-    if(newData[0]){
-      let head = Object.keys(newData[0]);
-      head.shift()
-      setHeaders(head)
-    }
+
+    let head = [
+      "prefix",
+      "date",
+      "starterNum",
+      "num",
+      "type",
+      "ext",
+      "starter",
+      "year",
+      "starterLocation",
+      "starterCp",
+      "extract",
+      "starterStreet",
+      "status",
+      "code",
+    ];
+    setHeaders(head);
+
     setEncontrado(true);
     setLoading(false);
     if (newData.length == 0) {
@@ -137,7 +160,7 @@ export default function Search() {
   const changeSeachExtension = (event) => {
     setFieldsSearch({
       ...fieldsSearch,
-      extension: event.target.value,
+      ext: event.target.value,
     });
   };
 
@@ -174,21 +197,20 @@ export default function Search() {
               type="search"
               onChange={changeSeachNum}
             />
-        
-        
+
             <TextField
               id="year"
               label="Año"
               type="search"
               onChange={changeSeachYear}
             />
-{/*             <TextField
+            {/*             <TextField
               id="extension"
               label="Extracto"
               type="search"
               onChange={changeSeachExtension}
             /> */}
-            </div>
+          </div>
           <Button
             variant="contained"
             onClick={buscar}
@@ -206,9 +228,14 @@ export default function Search() {
           </Box>
         )}
         {encontrado && !loading ? (
-               <DynamicTable data={rows} headers={headers} currentPage={0} onPageChange={() => console.log("page change")} buttonAction={download} ></DynamicTable>
+          <DynamicTable
+            data={rows}
+            headers={headers}
+            currentPage={0}
+            onPageChange={() => console.log("page change")}
+            buttonAction={download}
+          ></DynamicTable>
         ) : null}
-
       </Container>
     </>
   );

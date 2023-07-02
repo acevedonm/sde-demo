@@ -28,37 +28,41 @@ const translations = {
   extracto: "extracto",
   starterStreet: "calle iniciador",
   file: "PDF",
-  status: "estado",
   code: "codigo",
+  status: "estado",
 };
 
-function DynamicTable({ data, headers, buttonAction = (item?) => {} , currentPage, onPageChange }) {
+function DynamicTable({
+  data,
+  headers,
+  buttonAction = (item?) => {},
+  currentPage,
+  onPageChange,
+}) {
   if (!data || data.length === 0) {
     return <div>No hay datos disponibles.</div>;
   }
 
-
   const pageSize = 10; // Número de elementos por página
   const totalPages = Math.ceil(data.length / pageSize);
-
 
   // Mapeo de los encabezados para traducirlos
   const translatedHeaders = headers.map((header) =>
     translations[header].toUpperCase()
   );
 
+  //const translatedHeaders = ["prefix","num","year","ext","extract","starter","starterStreet","starterNum","starterLocation","starterCp","date","type","code","status"]
   //Esto se usa por si recibo una accion para ejecutar en el boton de la tabla
   const handleButtonClick = (item) => {
     buttonAction(item);
   };
 
-  console.log(translatedHeaders)
   return (
     <div style={{ maxWidth: "100%", overflowX: "auto" }}>
       <Table style={{ minWidth: 650 }}>
         <TableHead>
           <TableRow>
-          <TableCell key="PDF">PDF</TableCell>
+            <TableCell key="PDF">PDF</TableCell>
             {translatedHeaders.map((header, index) => (
               <TableCell key={index}>{header}</TableCell>
             ))}
@@ -68,14 +72,14 @@ function DynamicTable({ data, headers, buttonAction = (item?) => {} , currentPag
           {data.map((item, index) => (
             <TableRow key={index}>
               <TableCell align="right">
-                <IconButton
-                  onClick={() => handleButtonClick(item)}
-                >
+                <IconButton onClick={() => handleButtonClick(item)}>
                   <FileDownloadIcon></FileDownloadIcon>
                 </IconButton>
-              </TableCell >
+              </TableCell>
               {headers.map((header, index) => (
-                <TableCell align="right" key={index}>{item[header]}</TableCell>
+                <TableCell align="right" key={index}>
+                  {item[header]}
+                </TableCell>
               ))}
             </TableRow>
           ))}

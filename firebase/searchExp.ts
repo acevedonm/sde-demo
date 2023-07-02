@@ -41,7 +41,7 @@ export default async function searchExp (fieldsSearch) {
   }
 
     if (ext) {
-    qb = query(qb, where("extension", "==", ext));
+    qb = query(qb, where("ext", "==", ext));
   }
 
   const snapshot = await getDocs(qb);

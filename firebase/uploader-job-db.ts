@@ -1,22 +1,11 @@
-import {
-    collection,
-    getDocs,
-    query,
-  } from "firebase/firestore";
+
   import {
-    getStorage , ref, uploadBytes
+    getStorage
   } from "firebase/storage";
   import firebaseApp from "./client";
   import Papa from "papaparse";
 import uploadData from "./upload-data";
 
-  interface Expediente {
-    starter: string;
-    prefijo: string;
-    num: string;
-    year: string;
-    extension: string;
-  }
   
   const storage = getStorage(firebaseApp);
   
