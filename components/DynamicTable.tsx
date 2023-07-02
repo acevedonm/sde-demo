@@ -5,7 +5,6 @@ import {
   TableRow,
   TableCell,
   TableBody,
-  Button,
   IconButton,
   TablePagination,
 } from "@mui/material";
@@ -31,6 +30,9 @@ const translations = {
   code: "codigo",
   status: "estado",
 };
+
+
+
 
 function DynamicTable({
   data,
