@@ -43,7 +43,7 @@ export async function getAllExp () {
 * @param {number} pageNumber - numero de paginas
 */
 export async function getExpedientesPorPagina(pageNumber: number = 0, pageSize: number = 10,  actives: boolean = false ) {
-  console.log("getExpedientesPorPagina")
+
   const startAfterDocument = pageNumber > 1 ? (pageNumber - 1) * pageSize : null;
 
   let pageQuery = query(collection(db, "expedientes"), limit(pageSize));
@@ -53,7 +53,6 @@ export async function getExpedientesPorPagina(pageNumber: number = 0, pageSize: 
     pageQuery = query(pageQuery, startAfter(startAfterDocRef));
   }
 
-  console.log(actives)
   if (actives) {
     pageQuery = query(pageQuery, where("file", "!=", ""));
   }

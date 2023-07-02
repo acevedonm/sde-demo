@@ -28,6 +28,29 @@ const theme = createTheme({
     fontFamily: roboto.style.fontFamily,
   },
   components: {
+    MuiTable: {
+      styleOverrides: {
+        root: {
+          minWidth: 650,
+          border: "1px solid #000",
+          // Agrega tus estilos personalizados para la tabla aquí
+          // Por ejemplo:
+          // fontSize: "12px",
+          // backgroundColor: "#f3f3f3",
+        },
+      },
+    },
+    MuiTableCell: {
+      styleOverrides: {
+        root: {
+          // Agrega tus estilos personalizados para las celdas de la tabla aquí
+          // Por ejemplo:
+          fontSize: "15px",
+          // fontWeight: "bold",
+          // color: "red",
+        },
+      },
+    },
     MuiTextField: {
       styleOverrides: {
         root: {
