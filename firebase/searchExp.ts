@@ -15,8 +15,8 @@ import _ from "lodash";
 const db = getFirestore(firebaseApp);
 
 export default async function searchExp (fieldsSearch) {
-  return await findWhere(fieldsSearch)
-  //return await findWherePagination(fieldsSearch)
+
+return await findWherePagination(fieldsSearch)
 }
 
  async function findWhere (fieldsSearch) {
