@@ -26,7 +26,11 @@ import DynamicTable from "../../components/DynamicTable";
 const storage = getStorage();
 
 function download(data: Expedientes) {
-  getDownloadURL(ref(storage, `expedientes/2-2020.pdf`))
+  let ext = data.ext
+  if(data.ext=="MADRE"){
+    ext = "0"
+  }
+  getDownloadURL(ref(storage, `expedientes/${data.prefix}-${data.num}-${data.year}-${ext}.pdf`))
     .then((url) => {
       FilesService.downloadFile(url, "name");
       const xhr = new XMLHttpRequest();

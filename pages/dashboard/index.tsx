@@ -1,8 +1,15 @@
 import { useState } from "react";
-import { Box, Button, CircularProgress, Container, LinearProgress } from "@mui/material";
+import {
+  Box,
+  Button,
+  CircularProgress,
+  Container,
+  LinearProgress,
+} from "@mui/material";
 import { Card, CardContent, Typography, CardActions } from "@mui/material";
 import { Grid } from "@mui/material";
 
+import DialogContent from "@mui/material/DialogContent";
 import uploaderJob from "../../firebase/uploader-job-db";
 import DynamicDialog from "../../components/DynamicDialog";
 import uploadMassivePDF from "../../firebase/uploader-job-pdf";
@@ -15,7 +22,12 @@ export default function Dashboard() {
 
   const [selectedDir, setSelectedDir] = useState(null); //dice dir pero son varios pdf
 
+  const [cargados, setCargados] = useState([]);
+
+  const [noCargados, setNoCargados] = useState([]);
+
   const [dialogUploadingOpen, setDialogUploadingOpen] = useState(null);
+  const [dialogInfo, setDialogInfo] = useState(null);
 
   const handleFileListPDF = (event) => {
     setSelectedDir(event.target.files);
@@ -23,11 +35,17 @@ export default function Dashboard() {
   const handleMassivePDF = async () => {
     setDialogUploadingOpen(true);
     for (const file of selectedDir) {
-      console.log(file)
-      console.log(file.name)
-      await uploadPDF(file, file.name);
+      let pdfCargado = await uploadPDF(file, file.name);
+      if (pdfCargado) {
+        console.log(`PDF Cargado: ${file.name}`);
+        setCargados([...file.name]);
+      } else {
+        console.log(`Error al cargar PDF: ${file.name}`);
+        setNoCargados([...file.name]);
+      }
     }
     setDialogUploadingOpen(false);
+    setDialogInfo(true);
   };
 
   const [descriptions, setDescriptions] = useState([
@@ -146,10 +164,27 @@ export default function Dashboard() {
               <DynamicDialog
                 title="Cargando PDF's Massivamente"
                 open={dialogUploadingOpen}
-              ><CircularProgress /></DynamicDialog>
+              >
+                <CircularProgress />
+              </DynamicDialog>
+              <DynamicDialog
+                title="Informacion de carga"
+                open={dialogInfo}
+                onConfirm={() => setDialogInfo(false)}
+              >
+                <div>
+                  <Typography>Cargados</Typography>
+                  {cargados.map((c, index) => (
+                    <Typography key={index}>{c}</Typography>
+                  ))}
+                  <Typography>No Cargados</Typography>
+                  {noCargados.map((c, index) => (
+                    <Typography key={index}>{c}</Typography>
+                  ))}
+                </div>
+              </DynamicDialog>
             </Card>
           </Grid>
-
         </Grid>
       )}
     </Container>
