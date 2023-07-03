@@ -6,7 +6,15 @@ import {
   Container,
   LinearProgress,
 } from "@mui/material";
-import { Card, CardContent, Typography, CardActions } from "@mui/material";
+import {
+  Card,
+  CardContent,
+  Typography,
+  CardActions,
+  List,
+  ListItem,
+  ListItemText,
+} from "@mui/material";
 import { Grid } from "@mui/material";
 
 import DialogContent from "@mui/material/DialogContent";
@@ -38,10 +46,10 @@ export default function Dashboard() {
       let pdfCargado = await uploadPDF(file, file.name);
       if (pdfCargado) {
         console.log(`PDF Cargado: ${file.name}`);
-        setCargados([...file.name]);
+        setCargados([...cargados, file.name]);
       } else {
         console.log(`Error al cargar PDF: ${file.name}`);
-        setNoCargados([...file.name]);
+        setNoCargados([...noCargados, file.name]);
       }
     }
     setDialogUploadingOpen(false);
@@ -171,17 +179,34 @@ export default function Dashboard() {
                 title="Informacion de carga"
                 open={dialogInfo}
                 onConfirm={() => setDialogInfo(false)}
+                onCancel={() => setDialogInfo(false)}
               >
-                <div>
-                  <Typography>Cargados</Typography>
-                  {cargados.map((c, index) => (
-                    <Typography key={index}>{c}</Typography>
-                  ))}
-                  <Typography>No Cargados</Typography>
-                  {noCargados.map((c, index) => (
-                    <Typography key={index}>{c}</Typography>
-                  ))}
-                </div>
+                <Grid container spacing={2}>
+                  <Grid item xs={6}>
+                    <div>
+                      <Typography>Cargados</Typography>
+                      <List>
+                        {cargados.map((c, index) => (
+                          <ListItem key={index}>
+                            <ListItemText primary={c} />
+                          </ListItem>
+                        ))}
+                      </List>
+                    </div>
+                  </Grid>
+                  <Grid item xs={6}>
+                    <div>
+                      <Typography>No Cargados</Typography>
+                      <List>
+                        {noCargados.map((c, index) => (
+                          <ListItem key={index}>
+                            <ListItemText primary={c} />
+                          </ListItem>
+                        ))}
+                      </List>
+                    </div>
+                  </Grid>
+                </Grid>
               </DynamicDialog>
             </Card>
           </Grid>

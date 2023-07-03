@@ -19,24 +19,16 @@ function DynamicDialog({
       <DialogTitle>{title}</DialogTitle>
       <DialogContent>
         <DialogContentText>{context}</DialogContentText>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          {children}
-        </div>
+        <DialogContentText>{children}</DialogContentText>
       </DialogContent>
-      {(onConfirm || onCancel) && (
-        <DialogActions>
-          <Button onClick={onCancel}>Cancelar</Button>
+      <DialogActions>
+        {onCancel && <Button onClick={onCancel}>Cancelar</Button>}
+        {onConfirm && (
           <Button onClick={onConfirm} variant="contained" autoFocus>
             Confirmar
           </Button>
-        </DialogActions>
-      )}
+        )}
+      </DialogActions>
     </Dialog>
   );
 }
