@@ -14,7 +14,6 @@ function DynamicAlert({ open, severity, message, handleClose }) {
     handleSnackbarClose(event, null);
   };
 
-
   return (
     <Snackbar
       anchorOrigin={{ vertical: "top", horizontal: "center" }}
@@ -23,7 +22,8 @@ function DynamicAlert({ open, severity, message, handleClose }) {
       onClose={handleSnackbarClose}
     >
       <MuiAlert
-      elevation={6} variant="filled"
+        elevation={6}
+        variant="filled"
         onClose={handleAlertClose}
         severity={severity}
         sx={{ width: "100%" }}

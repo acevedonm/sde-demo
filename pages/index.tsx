@@ -81,7 +81,7 @@ export default function Home() {
         <DialogContent dividers>
           <Typography gutterBottom>
             Bienvenido al sistema de digitalizacion, busqueda y archivado de
-            expedientes de la Municipalidad de Luján
+            expedientes de la Municipalidad de Luján.
           </Typography>
           <Typography gutterBottom>
             Actualmente nos encontramos en fase de desarrollo, por lo cual
