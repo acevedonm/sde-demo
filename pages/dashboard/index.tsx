@@ -42,16 +42,23 @@ export default function Dashboard() {
   };
   const handleMassivePDF = async () => {
     setDialogUploadingOpen(true);
+    const nuevosCargados = [];
+    const nuevosNoCargados = [];
+
     for (const file of selectedDir) {
       let pdfCargado = await uploadPDF(file, file.name);
       if (pdfCargado) {
         console.log(`PDF Cargado: ${file.name}`);
-        setCargados([...cargados, file.name]);
+        nuevosCargados.push(file.name);
       } else {
         console.log(`Error al cargar PDF: ${file.name}`);
-        setNoCargados([...noCargados, file.name]);
+        nuevosNoCargados.push(file.name);
       }
     }
+
+    setCargados((prevCargados) => [...prevCargados, ...nuevosCargados]);
+    setNoCargados((prevNoCargados) => [...prevNoCargados, ...nuevosNoCargados]);
+
     setDialogUploadingOpen(false);
     setDialogInfo(true);
   };

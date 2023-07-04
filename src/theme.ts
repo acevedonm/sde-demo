@@ -31,12 +31,17 @@ const theme = createTheme({
     MuiTable: {
       styleOverrides: {
         root: {
-          minWidth: 650,
+          width: "100%",
           border: "1px solid #000",
-          // Agrega tus estilos personalizados para la tabla aquí
-          // Por ejemplo:
-          // fontSize: "12px",
-          // backgroundColor: "#f3f3f3",
+          borderCollapse: "collapse",
+          "& th, & td": {
+            padding: "10px",
+            borderBottom: "1px solid #ddd",
+          },
+          "& th": {
+            backgroundColor: "#f5f5f5",
+            fontWeight: "bold",
+          },
         },
       },
     },

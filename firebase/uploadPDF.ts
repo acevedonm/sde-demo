@@ -16,6 +16,12 @@ const db = getFirestore(firebaseApp);
 export default async function uploadPDF(pdf, fileName) {
   const storageRef = ref(storage, `expedientes/${fileName}`);
   let [prefix, num, year, ext] = fileName.replace(".pdf", "").split("-");
+
+  if (!prefix || !num || !year || !ext) {
+    console.log("Error en el nombre del archivo");
+    return null;
+  }
+
   if (ext == "0") {
     ext = "MADRE";
   }
@@ -23,7 +29,6 @@ export default async function uploadPDF(pdf, fileName) {
   console.log([prefix, num, year, ext]);
   try {
     let url = null;
-
     // Verificar si ya existe un archivo con el mismo nombre
     try {
       url = await getDownloadURL(storageRef);
