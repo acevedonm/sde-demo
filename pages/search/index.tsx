@@ -26,11 +26,16 @@ import DynamicTable from "../../components/DynamicTable";
 const storage = getStorage();
 
 function download(data: Expedientes) {
-  let ext = data.ext
-  if(data.ext=="MADRE"){
-    ext = "0"
+  let ext = data.ext;
+  if (data.ext == "MADRE") {
+    ext = "0";
   }
-  getDownloadURL(ref(storage, `expedientes/${data.prefix}-${data.num}-${data.year}-${ext}.pdf`))
+  getDownloadURL(
+    ref(
+      storage,
+      `expedientes/${data.prefix}-${data.num}-${data.year}-${ext}.pdf`
+    )
+  )
     .then((url) => {
       FilesService.downloadFile(url, "name");
       const xhr = new XMLHttpRequest();
@@ -89,19 +94,14 @@ export default function Search() {
 
     let head = [
       "prefix",
-      "date",
-      "starterNum",
       "num",
-      "type",
+      "year",
+      "date",
       "ext",
       "starter",
-      "year",
-      "starterLocation",
-      "starterCp",
       "extract",
-      "starterStreet",
       "status",
-      "code",
+      "type",
     ];
     setHeaders(head);
 
