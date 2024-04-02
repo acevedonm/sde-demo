@@ -1,5 +1,3 @@
-
-
 export default interface PaginatedResponse<T> {
   error: {};
   metadata: {
@@ -7,7 +5,7 @@ export default interface PaginatedResponse<T> {
   };
   data: T;
 }
-
+//dummy commit
 interface PaginationNode {
   page: number;
   pageResults: number;
