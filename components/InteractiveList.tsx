@@ -20,7 +20,7 @@ function generate(element: React.ReactElement) {
   return [0, 1, 2].map((value) =>
     React.cloneElement(element, {
       key: value,
-    })
+    }),
   );
 }
 
@@ -67,7 +67,7 @@ export default function InteractiveList() {
                     primary="Single-line item"
                     secondary={secondary ? "Secondary text" : null}
                   />
-                </ListItem>
+                </ListItem>,
               )}
             </List>
           </Demo>
@@ -87,7 +87,7 @@ export default function InteractiveList() {
                     primary="Single-line item"
                     secondary={secondary ? "Secondary text" : null}
                   />
-                </ListItem>
+                </ListItem>,
               )}
             </List>
           </Demo>
@@ -111,7 +111,7 @@ export default function InteractiveList() {
                     primary="Single-line item"
                     secondary={secondary ? "Secondary text" : null}
                   />
-                </ListItem>
+                </ListItem>,
               )}
             </List>
           </Demo>
@@ -139,7 +139,7 @@ export default function InteractiveList() {
                     primary="Single-line item"
                     secondary={secondary ? "Secondary text" : null}
                   />
-                </ListItem>
+                </ListItem>,
               )}
             </List>
           </Demo>

@@ -66,7 +66,7 @@ export async function findWherePagination(
   fieldsSearch,
   pageNumber: number = 0,
   pageSize: number = 10,
-  actives: boolean = false
+  actives: boolean = false,
 ) {
   const startAfterDocument =
     pageNumber > 1 ? (pageNumber - 1) * pageSize : null;

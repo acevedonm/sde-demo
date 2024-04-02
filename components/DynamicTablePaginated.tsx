@@ -1,11 +1,19 @@
-import React, { useState, useEffect } from 'react';
-import { Table, TableHead, TableRow, TableCell, TableBody, TablePagination } from "@mui/material";
+import React, { useState, useEffect } from "react";
+import {
+  Table,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableBody,
+  TablePagination,
+} from "@mui/material";
 
 function DynamicTablePaginated({ data }) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
-  const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
+  const emptyRows =
+    rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
   const pageCount = Math.ceil(data.length / rowsPerPage);
 
   const handleChangePage = (event, newPage) => {
@@ -17,7 +25,10 @@ function DynamicTablePaginated({ data }) {
     setPage(0);
   };
 
-  const currentData = data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+  const currentData = data.slice(
+    page * rowsPerPage,
+    page * rowsPerPage + rowsPerPage,
+  );
 
   if (!data || data.length === 0) {
     return <div>No hay datos disponibles.</div>;

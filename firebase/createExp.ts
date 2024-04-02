@@ -12,10 +12,13 @@ export default async function createExp(fields: FieldsUpload, PDF) {
     try {
       await uploadPDF(
         PDF,
-        `${fields.prefix}-${fields.num}-${fields.year}-${fields.ext}.pdf`
+        `${fields.prefix}-${fields.num}-${fields.year}-${fields.ext}.pdf`,
       );
     } catch {
-      console.log("error al intentar cargar pdf: ",`${fields.prefix}-${fields.num}-${fields.year}-${fields.ext}.pdf`)
+      console.log(
+        "error al intentar cargar pdf: ",
+        `${fields.prefix}-${fields.num}-${fields.year}-${fields.ext}.pdf`,
+      );
     }
     await setDoc(ref, fields);
   } catch (error) {

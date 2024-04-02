@@ -34,13 +34,13 @@ export default async function uploadPDF(pdf, fileName) {
       url = await getDownloadURL(storageRef);
       console.log(
         "Ya existe un archivo con el mismo nombre.",
-        `${prefix}-${num}-${year}-${ext}.pdf`
+        `${prefix}-${num}-${year}-${ext}.pdf`,
       );
       return null; // Salir de la función
     } catch (error) {
       // El archivo no existe, continuar con la subida
       console.log(
-        "El archivo no existe en el storage, se procederá a subirlo."
+        "El archivo no existe en el storage, se procederá a subirlo.",
       );
     }
 
@@ -50,7 +50,7 @@ export default async function uploadPDF(pdf, fileName) {
       where("prefix", "==", prefix),
       where("num", "==", num),
       where("year", "==", year),
-      where("ext", "==", ext)
+      where("ext", "==", ext),
     );
     const expedientesSnapshot = await getDocs(expedientesQuery);
 
@@ -65,7 +65,7 @@ export default async function uploadPDF(pdf, fileName) {
         const expedienteDoc = doc(
           db,
           "expedientes",
-          expedientesSnapshot.docs[0].id
+          expedientesSnapshot.docs[0].id,
         );
         await updateDoc(expedienteDoc, { file: url });
         console.log(`Expediente: ${prefix}-${num}-${year}-${ext} actualizado`);

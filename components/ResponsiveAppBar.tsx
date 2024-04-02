@@ -18,15 +18,14 @@ import { useRouter } from "next/router";
 const pages = ["Buscador", "Carga de Expedientes", "Administracion "];
 const settings = ["Perfil", "Configuracion", "Cerrar Sesión"];
 
-
 const auth = getAuth(firebaseApp);
 
 function ResponsiveAppBar() {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
-    null
+    null,
   );
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
-    null
+    null,
   );
 
   const router = useRouter();
@@ -67,7 +66,7 @@ function ResponsiveAppBar() {
           },
           function (error) {
             console.error("Sign Out Error", error);
-          }
+          },
         );
         break;
       default:
@@ -117,7 +116,7 @@ function ResponsiveAppBar() {
               >
                 <Typography textAlign="center">Carga de Expedientes</Typography>
               </MenuItem>
-{/*               <MenuItem
+              {/*               <MenuItem
                 key={"Administracion"}
                 onClick={() => handleRouter("dashboard")}
               >
@@ -171,7 +170,7 @@ function ResponsiveAppBar() {
             >
               carga de expediente
             </Button>
-{/*             <Button
+            {/*             <Button
               key={"Administracion"}
               component="a"
               href="/dashboard"

@@ -216,7 +216,7 @@ export default function Link() {
             headers={headers}
             currentPage={0}
             onPageChange={() => console.log("page change")}
-            buttonAction={()=> console.log("Button")}
+            buttonAction={() => console.log("Button")}
           ></DynamicTable>
         ) : null}
       </Container>

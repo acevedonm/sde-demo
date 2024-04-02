@@ -4,14 +4,13 @@ export default interface FieldsUpload {
   year: string;
   ext: string;
   starter: string;
-  extract?: string
- starterStreet?: string;
- starterNum?: string
- starterLocation?: string;
- starterCp?: string;
- date?: string;
- type?: string;
- code?: string;
- status?: string;
+  extract?: string;
+  starterStreet?: string;
+  starterNum?: string;
+  starterLocation?: string;
+  starterCp?: string;
+  date?: string;
+  type?: string;
+  code?: string;
+  status?: string;
 }
-

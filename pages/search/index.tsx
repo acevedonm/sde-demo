@@ -33,8 +33,8 @@ function download(data: Expedientes) {
   getDownloadURL(
     ref(
       storage,
-      `expedientes/${data.prefix}-${data.num}-${data.year}-${ext}.pdf`
-    )
+      `expedientes/${data.prefix}-${data.num}-${data.year}-${ext}.pdf`,
+    ),
   )
     .then((url) => {
       FilesService.downloadFile(url, "name");

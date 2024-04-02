@@ -31,9 +31,6 @@ const translations = {
   status: "estado",
 };
 
-
-
-
 function DynamicTable({
   data,
   headers,
@@ -50,7 +47,7 @@ function DynamicTable({
 
   // Mapeo de los encabezados para traducirlos
   const translatedHeaders = headers.map((header) =>
-    translations[header].toUpperCase()
+    translations[header].toUpperCase(),
   );
 
   //const translatedHeaders = ["prefix","num","year","ext","extract","starter","starterStreet","starterNum","starterLocation","starterCp","date","type","code","status"]
