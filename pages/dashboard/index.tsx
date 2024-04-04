@@ -5,6 +5,7 @@ import {
   CircularProgress,
   Container,
   LinearProgress,
+  TextField,
 } from "@mui/material";
 import {
   Card,
@@ -16,12 +17,11 @@ import {
   ListItemText,
 } from "@mui/material";
 import { Grid } from "@mui/material";
-
-import DialogContent from "@mui/material/DialogContent";
 import uploaderJob from "../../firebase/uploader-job-db";
 import DynamicDialog from "../../components/DynamicDialog";
-import uploadMassivePDF from "../../firebase/uploader-job-pdf";
 import uploadPDF from "../../firebase/uploadPDF";
+import migrateDocuments from "../../firebase/migrate";
+import deleteDocument from "../../firebase/delete";
 
 export default function Dashboard() {
   const [loading, setLoading] = useState(false);
@@ -36,6 +36,11 @@ export default function Dashboard() {
 
   const [dialogUploadingOpen, setDialogUploadingOpen] = useState(null);
   const [dialogInfo, setDialogInfo] = useState(null);
+
+  const [yearToMigrate, setYearToMigrate] = useState('');
+  
+
+  const [recordDelete, setRecordDelete] = useState(null);
 
   const handleFileListPDF = (event) => {
     setSelectedDir(event.target.files);
@@ -63,20 +68,47 @@ export default function Dashboard() {
     setDialogInfo(true);
   };
 
+
+
+
+  const handleDelete = async () => {
+    await deleteDocument(recordDelete)
+  };
+
+  
+
+  const changeRecordDelete = (event) => {
+    setRecordDelete(event.target.value);
+  };
+
+
+
+  const changeYearMigration = (event) => {
+    console.log("event.target.value ", event.target.value)
+    setYearToMigrate(event.target.value);
+  };
+
+
+  const handleMigration = async () => {
+    setDialogUploadingOpen(true);
+    console.log({yearToMigrate})
+    await migrateDocuments(yearToMigrate)
+    setDialogUploadingOpen(false);
+    setDialogInfo(true);
+  };
+
   const [descriptions, setDescriptions] = useState([
     "Carga una archivo CSV en la base de datos",
     "Elije un PDF para cargarlo en la base de datos",
     "Seleccione una carpeta con archivos PDF para cargarlos masivamente a la base de datos",
+    
   ]);
 
   const handlerUploadJob = (event) => {
     setSelectedFile(event.target.files[0]);
   };
 
-  /*   const handlerUploadJob = (event) => {
-    setLoading(true)
-    uploaderJob(event,setLoading)
-  }; */
+
 
   const handlerUploadPDFJob = (event) => {
     setLoading(true);
@@ -215,6 +247,69 @@ export default function Dashboard() {
                   </Grid>
                 </Grid>
               </DynamicDialog>
+            </Card>
+          </Grid>
+
+          <Grid item xs={12} md={4}>
+            <Card sx={{ minHeight: 150 }}>
+              <CardContent>
+                <Typography variant="body2">Ejecutar una migracion por año</Typography>
+              </CardContent>
+              <CardActions sx={{ justifyContent: "flex-end" }}>
+              <TextField
+              id="yearToMigration"
+              label="Año"
+              type="text"
+              onChange={changeYearMigration}
+            />
+              <Button
+                  size="small"
+                  component="label"
+                  variant="contained"
+                  onClick={handleMigration}
+                >
+                  Ejecutar Migracion
+                </Button>        
+              </CardActions>
+              <DynamicDialog
+                title="Ejecutando migracion"
+                open={dialogUploadingOpen}
+              >
+                <CircularProgress />
+              </DynamicDialog>
+              <DynamicDialog
+                title="MIGRACION COMPLETA"
+                open={dialogInfo}
+                onConfirm={() => setDialogInfo(false)}
+                onCancel={() => setDialogInfo(false)}
+              >
+                  <CircularProgress />
+                 </DynamicDialog>
+            </Card>
+          </Grid>
+
+
+          <Grid item xs={12} md={4}>
+            <Card sx={{ minHeight: 150 }}>
+              <CardContent>
+                <Typography variant="body2">Elimina un expediente</Typography>
+              </CardContent>
+              <CardActions sx={{ justifyContent: "flex-end" }}>
+              <TextField
+              id="delete"
+              label="Expediente"
+              type="text"
+              onChange={changeRecordDelete}
+            />
+              <Button
+                  size="small"
+                  component="label"
+                  variant="contained"
+                  onClick={handleDelete}
+                >
+                  Eliminar Expedientes
+                </Button>        
+              </CardActions>
             </Card>
           </Grid>
         </Grid>
