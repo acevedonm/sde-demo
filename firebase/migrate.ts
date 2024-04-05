@@ -11,6 +11,13 @@ import firebaseApp from "./client";
 
 const db = getFirestore(firebaseApp);
 export default async function migrateDocuments(year) {
+
+
+  if(!year){
+    console.log("No se encontro año para migracion");
+    return null
+  }
+
   console.log("Ejecutando Migracion para el año: ", year);
 
   const expedientesRef = collection(db, "expedientes");
@@ -33,7 +40,7 @@ export default async function migrateDocuments(year) {
 
     data.starterNum = parseInt(data.starterNum, 10) || 0;
 
-    data.ext = data.ext === "madre" ? 0 : parseInt(data.ext, 10) || 0;
+    data.ext = data.ext === "madre" ? 0 : parseInt(data.ext, 10) || -1;
 
     let targetCollectionPath = `records/records_${data.file ? "complete" : "incomplete"}/${year}`;
 

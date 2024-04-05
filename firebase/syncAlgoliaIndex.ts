@@ -12,6 +12,7 @@ export default async function synchronizeFirestoreToAlgolia(year) {
 
 
     if(!year){
+      console.log("No se encontro año para sincronizar")
         return null
     }
     const recordsCollection = `${process.env.NEXT_PUBLIC_FIREBASE_COLLECTION_RECORDS}/${year}`

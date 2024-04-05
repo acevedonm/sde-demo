@@ -23,6 +23,7 @@ import uploadPDF from "../../firebase/uploadPDF";
 import migrateDocuments from "../../firebase/migrate";
 import deleteDocument from "../../firebase/delete";
 import synchronizeFirestoreToAlgolia from "../../firebase/syncAlgoliaIndex";
+import CheckIcon from '@mui/icons-material/Check';
 
 export default function Dashboard() {
   const [loading, setLoading] = useState(false);
@@ -36,7 +37,13 @@ export default function Dashboard() {
   const [noCargados, setNoCargados] = useState([]);
 
   const [dialogUploadingOpen, setDialogUploadingOpen] = useState(null);
-  const [dialogInfo, setDialogInfo] = useState(null);
+
+  
+
+  const [dialogMigrationOpen, setDialogMigrationOpen] = useState(null);
+
+
+  const [dialogInfo, setDialogInfo] = useState({open: false, dialog: ""});
 
   const [yearToMigrate, setYearToMigrate] = useState("");
 
@@ -69,7 +76,7 @@ export default function Dashboard() {
     setNoCargados((prevNoCargados) => [...prevNoCargados, ...nuevosNoCargados]);
 
     setDialogUploadingOpen(false);
-    setDialogInfo(true);
+    setDialogInfo({open: true, dialog: "uploadPdf"});
   };
 
   const handleDelete = async () => {
@@ -96,18 +103,11 @@ export default function Dashboard() {
   };
 
   const handleMigration = async () => {
-    setDialogUploadingOpen(true);
-    console.log({ yearToMigrate });
+    setDialogMigrationOpen(true);
     await migrateDocuments(yearToMigrate);
-    setDialogUploadingOpen(false);
-    setDialogInfo(true);
+    setDialogMigrationOpen(false);
+    setDialogInfo({open: true, dialog: "migrate"});
   };
-
-  const [descriptions, setDescriptions] = useState([
-    "Carga una archivo CSV en la base de datos",
-    "Elije un PDF para cargarlo en la base de datos",
-    "Seleccione una carpeta con archivos PDF para cargarlos masivamente a la base de datos",
-  ]);
 
   const handlerUploadJob = (event) => {
     setSelectedFile(event.target.files[0]);
@@ -129,7 +129,7 @@ export default function Dashboard() {
           <Grid item xs={12} md={4}>
             <Card sx={{ minHeight: 150 }}>
               <CardContent>
-                <Typography variant="body2">{descriptions[0]}</Typography>
+                <Typography variant="body2">Carga una archivo CSV en la base de datos</Typography>
               </CardContent>
               {selectedFile && (
                 <Typography variant="body2" sx={{ marginTop: "16px" }}>
@@ -162,7 +162,7 @@ export default function Dashboard() {
           <Grid item xs={12} md={4}>
             <Card sx={{ minHeight: 150 }}>
               <CardContent>
-                <Typography variant="body2">{descriptions[1]}</Typography>
+                <Typography variant="body2"> Elije un PDF para cargarlo en la base de datos"</Typography>
               </CardContent>
               <CardActions sx={{ justifyContent: "flex-end" }}>
                 <Button
@@ -186,10 +186,10 @@ export default function Dashboard() {
           <Grid item xs={12} md={4}>
             <Card sx={{ minHeight: 150 }}>
               <CardContent>
-                <Typography variant="body2">{descriptions[2]}</Typography>
+                <Typography variant="body2">Seleccione una carpeta con archivos PDF para cargarlos masivamente a la base de datos</Typography>
               </CardContent>
               <CardActions sx={{ justifyContent: "flex-end" }}>
-                <Button size="small" component="label" variant="contained">
+                <Button disabled size="small" component="label" variant="contained">
                   Seleccionar Varios PDF
                   <input
                     hidden
@@ -219,9 +219,9 @@ export default function Dashboard() {
               </DynamicDialog>
               <DynamicDialog
                 title="Informacion de carga"
-                open={dialogInfo}
-                onConfirm={() => setDialogInfo(false)}
-                onCancel={() => setDialogInfo(false)}
+                open={dialogInfo.open && dialogInfo.dialog == "uploadPDF"}
+                onConfirm={() => setDialogInfo({open: false, dialog: ""})}
+                onCancel={() => setDialogInfo({open: false, dialog: ""})}
               >
                 <Grid container spacing={2}>
                   <Grid item xs={6}>
@@ -278,17 +278,16 @@ export default function Dashboard() {
               </CardActions>
               <DynamicDialog
                 title="Ejecutando migracion"
-                open={dialogUploadingOpen}
+                open={dialogMigrationOpen}
               >
                 <CircularProgress />
               </DynamicDialog>
               <DynamicDialog
                 title="MIGRACION COMPLETA"
-                open={dialogInfo}
-                onConfirm={() => setDialogInfo(false)}
-                onCancel={() => setDialogInfo(false)}
+                open={dialogInfo.open && dialogInfo.dialog == "migrate"}
+                onConfirm={() => setDialogInfo({open: false, dialog: ""})}
               >
-                <CircularProgress />
+                <></>
               </DynamicDialog>
             </Card>
           </Grid>
@@ -327,7 +326,7 @@ export default function Dashboard() {
               <CardActions sx={{ justifyContent: "flex-end" }}>
                 <TextField
                   id="sync"
-                  label="Sync"
+                  label="Año"
                   type="text"
                   onChange={changeYearSync}
                 />
