@@ -11,11 +11,9 @@ import firebaseApp from "./client";
 
 const db = getFirestore(firebaseApp);
 export default async function migrateDocuments(year) {
-
-
-  if(!year){
+  if (!year) {
     console.log("No se encontro año para migracion");
-    return null
+    return null;
   }
 
   console.log("Ejecutando Migracion para el año: ", year);

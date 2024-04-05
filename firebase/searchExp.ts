@@ -39,18 +39,16 @@ export async function findWherePagination(
   pageNumber: number = 0,
   pageSize: number = 10,
 ) {
-
   const { num, year, ext }: FieldsSearch = fieldsSearch;
 
-  if(!year){
-    console.log("El campo año es obligatorio")
-    return []
+  if (!year) {
+    console.log("El campo año es obligatorio");
+    return [];
   }
   if (!num && !year && !ext) {
     console.log("Faltan campos de busqueda");
     return [];
   }
-
 
   if (fieldsSearch.extract) {
     return await findWithExtract(fieldsSearch, pageNumber, pageSize);
@@ -71,7 +69,6 @@ export async function findWherePagination(
     pageQuery = query(pageQuery, startAfter(startAfterDocRef));
   }
 
-
   if (num) {
     pageQuery = query(pageQuery, where("num", "==", Number(num)));
   }
@@ -84,7 +81,7 @@ export async function findWherePagination(
   const pageDocuments = pageSnapshot.docs;
 
   const totalResults = pageSnapshot.size;
-  
+
   const totalPages = Math.ceil(totalResults / pageSize);
 
   const expedientes = pageDocuments.map((doc) => ({
@@ -105,7 +102,6 @@ export async function findWithExtract(
   let firebaseQuery = query(collection(db, recordsCollection));
   let documentNums = [];
 
-  
   if (fieldsSearch.extract) {
     const index = algoliaClient.initIndex(
       `${process.env.NEXT_PUBLIC_ALGOLIA_INDEX}_${fieldsSearch.year}`,
@@ -129,10 +125,7 @@ export async function findWithExtract(
       let responseExpedientes = [];
 
       for (const nums of numBatch) {
-        const batchQuery = query(
-          firebaseQuery,
-          where("num", "in", nums),
-        );
+        const batchQuery = query(firebaseQuery, where("num", "in", nums));
 
         const querySnapshot = await getDocs(batchQuery);
         const expedientes = querySnapshot.docs.map((doc) => ({
@@ -143,10 +136,11 @@ export async function findWithExtract(
         responseExpedientes = responseExpedientes.concat(expedientes);
       }
 
-      if(fieldsSearch.num){
-        return  responseExpedientes.filter((exp: Records) => exp.num == fieldsSearch.num)
+      if (fieldsSearch.num) {
+        return responseExpedientes.filter(
+          (exp: Records) => exp.num == fieldsSearch.num,
+        );
       }
-
 
       return responseExpedientes;
     } catch (error) {
@@ -155,4 +149,3 @@ export async function findWithExtract(
     }
   }
 }
-

@@ -56,7 +56,8 @@ export default function Search() {
   const [rows, setRows] = useState([]);
 
   let staticHeaders = [
-    "prefix",    "num",
+    "prefix",
+    "num",
     "year",
     "extract",
     "ext",
@@ -102,7 +103,6 @@ export default function Search() {
     setLoading(true);
     const newData = await searchExp(fieldsSearch);
 
-    
     setRows(newData);
 
     setEncontrado(true);
@@ -199,7 +199,6 @@ export default function Search() {
               label="Extracto"
               type="search"
               onChange={changeSeachExtract}
-
             />
           </div>
           <Button
