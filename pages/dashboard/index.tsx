@@ -36,9 +36,8 @@ export default function Dashboard() {
 
   const [noCargados, setNoCargados] = useState([]);
 
-  const [dialogUploadingOpen, setDialogUploadingOpen] = useState(null);
+  const [dialogAwaitOpen, setDialogAwaitOpen] = useState({ open: false, dialog: "" });
 
-  const [dialogMigrationOpen, setDialogMigrationOpen] = useState(null);
 
   const [dialogInfo, setDialogInfo] = useState({ open: false, dialog: "" });
 
@@ -52,7 +51,7 @@ export default function Dashboard() {
     setSelectedDir(event.target.files);
   };
   const handleMassivePDF = async () => {
-    setDialogUploadingOpen(true);
+    setDialogAwaitOpen({open: true, dialog: "uploadPDF"});
     const nuevosCargados = [];
     const nuevosNoCargados = [];
 
@@ -70,8 +69,8 @@ export default function Dashboard() {
     setCargados((prevCargados) => [...prevCargados, ...nuevosCargados]);
     setNoCargados((prevNoCargados) => [...prevNoCargados, ...nuevosNoCargados]);
 
-    setDialogUploadingOpen(false);
-    setDialogInfo({ open: true, dialog: "uploadPdf" });
+    setDialogAwaitOpen({open: false, dialog: ""});
+    setDialogInfo({ open: true, dialog: "uploadPDF" });
   };
 
   const handleDelete = async () => {
@@ -83,7 +82,10 @@ export default function Dashboard() {
   };
 
   const handleSync = async () => {
+    setDialogAwaitOpen({ open: true, dialog: "sync" });
     await synchronizeFirestoreToAlgolia(yearSync);
+    setDialogInfo({ open: true, dialog: "sync" });
+    setDialogAwaitOpen({ open: false, dialog: "" });
   };
 
   const changeRecordDelete = (event) => {
@@ -96,9 +98,9 @@ export default function Dashboard() {
   };
 
   const handleMigration = async () => {
-    setDialogMigrationOpen(true);
+    setDialogAwaitOpen({ open: true, dialog: "migrate" });
     await migrateDocuments(yearToMigrate);
-    setDialogMigrationOpen(false);
+    setDialogAwaitOpen({ open: false, dialog: "" });
     setDialogInfo({ open: true, dialog: "migrate" });
   };
 
@@ -219,7 +221,7 @@ export default function Dashboard() {
               </CardActions>
               <DynamicDialog
                 title="Cargando PDF's Massivamente"
-                open={dialogUploadingOpen}
+                open={dialogAwaitOpen.open && dialogAwaitOpen.dialog == "uploadPDF"}
               >
                 <CircularProgress />
               </DynamicDialog>
@@ -284,7 +286,7 @@ export default function Dashboard() {
               </CardActions>
               <DynamicDialog
                 title="Ejecutando migracion"
-                open={dialogMigrationOpen}
+                open={dialogAwaitOpen.open && dialogAwaitOpen.dialog == "migrate"}
               >
                 <CircularProgress />
               </DynamicDialog>
@@ -343,6 +345,19 @@ export default function Dashboard() {
                   Sync
                 </Button>
               </CardActions>
+              <DynamicDialog
+                title="Ejecutando Syncronizacion con Algolia"
+                open={dialogAwaitOpen.open && dialogAwaitOpen.dialog == "sync"}
+              >
+                <CircularProgress />
+              </DynamicDialog>
+              <DynamicDialog
+                title="SYNCRONIZACION COMPLETA"
+                open={dialogInfo.open && dialogInfo.dialog == "sync"}
+                onConfirm={() => setDialogInfo({ open: false, dialog: "" })}
+              >
+                <></>
+              </DynamicDialog>
             </Card>
           </Grid>
         </Grid>
