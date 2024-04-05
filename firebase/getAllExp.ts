@@ -8,8 +8,6 @@ import {
   startAfter,
 } from "firebase/firestore";
 import firebaseApp from "./client";
-import PaginatedResponse from "../src/interfaces/paginatedResponse";
-import { Expedientes } from "../src/interfaces/expedientes";
 
 const db = getFirestore(firebaseApp);
 

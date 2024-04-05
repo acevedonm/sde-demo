@@ -83,14 +83,6 @@ export default function Home() {
             Bienvenido al sistema de digitalizacion, busqueda y archivado de
             expedientes de la Municipalidad de Luján.
           </Typography>
-          <Typography gutterBottom>
-            Actualmente nos encontramos en fase de desarrollo, por lo cual
-            algunas opciones no estaran disponibles.
-          </Typography>
-          <Typography gutterBottom>
-            Le pedimos paciencia, el equipo de programadores esta trabajando en
-            ello.
-          </Typography>
         </DialogContent>
         <DialogActions>
           <Button autoFocus onClick={handleClose}>

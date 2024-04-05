@@ -19,7 +19,7 @@ import AlertTitle from "@mui/material/AlertTitle";
 import { getAllExp, getExpedientesPorPagina } from "../../firebase/getAllExp";
 import LinearProgress from "@mui/material/LinearProgress";
 import searchExp from "../../firebase/searchExp";
-import { Expedientes } from "../../src/interfaces/expedientes";
+import { Records } from "../../src/interfaces/records";
 import { getStorage, ref, getDownloadURL } from "firebase/storage";
 import DynamicTable from "../../components/DynamicTable";
 

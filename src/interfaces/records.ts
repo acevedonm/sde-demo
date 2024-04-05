@@ -1,13 +1,13 @@
-export class Expedientes {
+export class Records {
   id: string;
-  prefix: string;
-  num: string;
-  year: string;
-  ext: string;
+  prefix: number;
+  num: number;
+  year: number;
+  ext: number;
   extract?: string;
   starter: string;
   starterStreet?: string;
-  starterNum?: string;
+  starterNum?: number;
   starterLocation?: string;
   starterCp?: string;
   date?: string;

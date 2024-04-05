@@ -6,53 +6,25 @@ import {
   where,
   limit,
   startAfter,
+  collectionGroup,
+  FieldPath,
 } from "firebase/firestore";
 import FieldsUpload from "../src/interfaces/fieldsUpload";
 import firebaseApp from "./client";
 import _ from "lodash";
+import FieldsSearch from "../src/interfaces/fieldsSearch";
+import algoliaClient from "../algolia/client";
+import { Records } from "../src/interfaces/records";
 
 const db = getFirestore(firebaseApp);
 
 export default async function searchExp(fieldsSearch) {
-  return await findWherePagination(fieldsSearch, 0, 20, true);
-}
-
-async function findWhere(fieldsSearch) {
-  const { starter, num, year, ext }: FieldsUpload = fieldsSearch;
-
-  if (!starter && !num && !year && !ext) {
-    return [];
-  }
-  let qb = query(collection(db, "expedientes"));
-  const expedientes = [];
-
-  if (starter) {
-    qb = query(qb, where("starter", "==", starter));
-  }
-
-  if (num) {
-    qb = query(qb, where("num", "==", num));
-  }
-
-  if (year) {
-    qb = query(qb, where("year", "==", year));
-  }
-
-  if (ext) {
-    qb = query(qb, where("ext", "==", ext));
-  }
-
-  const snapshot = await getDocs(qb);
-  snapshot.forEach((doc) => {
-    expedientes.push(doc.data());
-  });
-  return expedientes;
+  return await findWherePagination(fieldsSearch, 0, 30);
 }
 
 //-------------------------------------------- EJEMPLO DE PAGINACION
-
-async function getDocumentReference(documentIndex) {
-  const querySnapshot = await getDocs(query(collection(db, "expedientes")));
+async function getDocumentReference(documentIndex, recordsCollection) {
+  const querySnapshot = await getDocs(query(collection(db, recordsCollection)));
   const documents = querySnapshot.docs;
 
   if (documentIndex >= 0 && documentIndex < documents.length) {
@@ -63,51 +35,56 @@ async function getDocumentReference(documentIndex) {
 }
 
 export async function findWherePagination(
-  fieldsSearch,
+  fieldsSearch: FieldsSearch,
   pageNumber: number = 0,
   pageSize: number = 10,
-  actives: boolean = false,
 ) {
-  const startAfterDocument =
-    pageNumber > 1 ? (pageNumber - 1) * pageSize : null;
 
-  let pageQuery = query(collection(db, "expedientes"), limit(pageSize));
+  const { num, year, ext }: FieldsSearch = fieldsSearch;
 
-  if (startAfterDocument) {
-    const startAfterDocRef = await getDocumentReference(startAfterDocument);
-    pageQuery = query(pageQuery, startAfter(startAfterDocRef));
+  if(!year){
+    console.log("El campo año es obligatorio")
+    return []
   }
-
-  if (actives) {
-    pageQuery = query(pageQuery, where("file", "!=", ""));
-  }
-
-  const { starter, num, year, ext }: FieldsUpload = fieldsSearch;
-
-  if (!starter && !num && !year && !ext) {
+  if (!num && !year && !ext) {
+    console.log("Faltan campos de busqueda");
     return [];
   }
 
-  if (starter) {
-    pageQuery = query(pageQuery, where("starter", "==", starter));
+
+  if (fieldsSearch.extract) {
+    return await findWithExtract(fieldsSearch, pageNumber, pageSize);
   }
+
+  const startAfterDocument =
+    pageNumber > 1 ? (pageNumber - 1) * pageSize : null;
+
+  const recordsCollection = `${process.env.NEXT_PUBLIC_FIREBASE_COLLECTION_RECORDS}/${fieldsSearch.year}`;
+
+  let pageQuery = query(collection(db, recordsCollection), limit(pageSize));
+
+  if (startAfterDocument) {
+    const startAfterDocRef = await getDocumentReference(
+      startAfterDocument,
+      recordsCollection,
+    );
+    pageQuery = query(pageQuery, startAfter(startAfterDocRef));
+  }
+
 
   if (num) {
-    pageQuery = query(pageQuery, where("num", "==", num));
-  }
-
-  if (year) {
-    pageQuery = query(pageQuery, where("year", "==", year));
+    pageQuery = query(pageQuery, where("num", "==", Number(num)));
   }
 
   if (ext) {
-    pageQuery = query(pageQuery, where("ext", "==", ext));
+    pageQuery = query(pageQuery, where("ext", "==", Number(ext)));
   }
 
   const pageSnapshot = await getDocs(pageQuery);
   const pageDocuments = pageSnapshot.docs;
 
   const totalResults = pageSnapshot.size;
+  
   const totalPages = Math.ceil(totalResults / pageSize);
 
   const expedientes = pageDocuments.map((doc) => ({
@@ -117,3 +94,65 @@ export async function findWherePagination(
 
   return expedientes;
 }
+
+export async function findWithExtract(
+  fieldsSearch: FieldsSearch,
+  pageNumber: number = 0,
+  pageSize: number = 10,
+) {
+  const recordsCollection = `${process.env.NEXT_PUBLIC_FIREBASE_COLLECTION_RECORDS}/${fieldsSearch.year}`;
+
+  let firebaseQuery = query(collection(db, recordsCollection));
+  let documentNums = [];
+
+  
+  if (fieldsSearch.extract) {
+    const index = algoliaClient.initIndex(
+      `${process.env.NEXT_PUBLIC_ALGOLIA_INDEX}_${fieldsSearch.year}`,
+    );
+
+    try {
+      const algoliaResults = await index.search(fieldsSearch.extract, {
+        hitsPerPage: pageSize,
+        page: pageNumber,
+      });
+
+      documentNums = algoliaResults.hits.map((hit) => hit["num"]);
+
+      const batchRecordsSize = 10;
+      const numBatch = [];
+
+      for (let i = 0; i < documentNums.length; i += batchRecordsSize) {
+        numBatch.push(documentNums.slice(i, i + batchRecordsSize));
+      }
+
+      let responseExpedientes = [];
+
+      for (const nums of numBatch) {
+        const batchQuery = query(
+          firebaseQuery,
+          where("num", "in", nums),
+        );
+
+        const querySnapshot = await getDocs(batchQuery);
+        const expedientes = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+
+        responseExpedientes = responseExpedientes.concat(expedientes);
+      }
+
+      if(fieldsSearch.num){
+        return  responseExpedientes.filter((exp: Records) => exp.num == fieldsSearch.num)
+      }
+
+
+      return responseExpedientes;
+    } catch (error) {
+      console.error("Error searching in Algolia:", error);
+      return [];
+    }
+  }
+}
+

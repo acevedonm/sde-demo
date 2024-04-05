@@ -1,39 +1,28 @@
-import { Container } from "@mui/material";
+import { Container, MenuItem, Tooltip } from "@mui/material";
 import { useState, useCallback, useEffect } from "react";
 import TextField from "@mui/material/TextField";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import { FilesService } from "../../utils/files.service";
-import IconButton from "@mui/material/IconButton";
-import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import Stack from "@mui/material/Stack";
 import Alert from "@mui/material/Alert";
 import AlertTitle from "@mui/material/AlertTitle";
 import { getAllExp, getExpedientesPorPagina } from "../../firebase/getAllExp";
 import LinearProgress from "@mui/material/LinearProgress";
 import searchExp from "../../firebase/searchExp";
-import { Expedientes } from "../../src/interfaces/expedientes";
+import { Records } from "../../src/interfaces/records";
 import { getStorage, ref, getDownloadURL } from "firebase/storage";
 import DynamicTable from "../../components/DynamicTable";
 
 const storage = getStorage();
 
-function download(data: Expedientes) {
-  let ext = data.ext;
-  if (data.ext == "MADRE") {
-    ext = "0";
-  }
+function download(data: Records) {
+  //NOTA: Aca estas armando la url de descarga con los campos del documento, cuando en realidad en doc.file esta la url, fijate
+  //que vuelta le podemos dar a esto ?
   getDownloadURL(
     ref(
       storage,
-      `expedientes/${data.prefix}-${data.num}-${data.year}-${ext}.pdf`,
+      `expedientes/${data.prefix}-${data.num}-${data.year}-${data.ext}.pdf`,
     ),
   )
     .then((url) => {
@@ -55,16 +44,30 @@ export default function Search() {
   const [encontrado, setEncontrado] = useState(false);
   const [fieldsSearch, setFieldsSearch] = useState({
     starter: "",
-    prefijo: "4069",
+    prefijo: 4069,
     num: "",
-    year: "",
+    year: new Date().getFullYear(),
     ext: "",
+    extract: "",
   });
   const [loading, setLoading] = useState(false);
 
   const [alert, setAlert] = useState(false);
   const [rows, setRows] = useState([]);
-  const [headers, setHeaders] = useState([]);
+
+  let staticHeaders = [
+    "prefix",    "num",
+    "year",
+    "extract",
+    "ext",
+    "starter",
+    "starterNum",
+    "starterLocation",
+    "starterCp",
+    "type",
+    "date",
+    "status",
+  ];
 
   function IconAlerts() {
     return (
@@ -92,46 +95,15 @@ export default function Search() {
     setLoading(false);
     setRows(newData);
 
-    let head = [
-      "prefix",
-      "num",
-      "year",
-      "date",
-      "ext",
-      "starter",
-      "extract",
-      "status",
-      "type",
-    ];
-    setHeaders(head);
-
     setEncontrado(true);
   };
 
   const buscar = async () => {
-    //seteo nuevas rows setRows
     setLoading(true);
     const newData = await searchExp(fieldsSearch);
 
+    
     setRows(newData);
-
-    let head = [
-      "prefix",
-      "date",
-      "starterNum",
-      "num",
-      "type",
-      "ext",
-      "starter",
-      "year",
-      "starterLocation",
-      "starterCp",
-      "extract",
-      "starterStreet",
-      "status",
-      "code",
-    ];
-    setHeaders(head);
 
     setEncontrado(true);
     setLoading(false);
@@ -161,10 +133,10 @@ export default function Search() {
       year: event.target.value,
     });
   };
-  const changeSeachExtension = (event) => {
+  const changeSeachExtract = (event) => {
     setFieldsSearch({
       ...fieldsSearch,
-      ext: event.target.value,
+      extract: event.target.value,
     });
   };
 
@@ -183,12 +155,6 @@ export default function Search() {
         >
           <div>
             <TextField
-              id="starter"
-              label="Iniciador"
-              type="search"
-              onChange={changeSeachStarter}
-            />
-            <TextField
               disabled
               id="prefijo"
               label="Prefijo"
@@ -205,15 +171,36 @@ export default function Search() {
             <TextField
               id="year"
               label="Año"
-              type="search"
+              select
+              value={fieldsSearch.year}
               onChange={changeSeachYear}
-            />
-            {/*             <TextField
-              id="extension"
+              helperText="Seleccione un año"
+              SelectProps={{
+                MenuProps: {
+                  PaperProps: {
+                    style: {
+                      maxHeight: 200, // Ajusta la altura máxima del menú desplegable
+                    },
+                  },
+                },
+              }}
+            >
+              {Array.from(
+                { length: 2025 - 2000 },
+                (_, index) => 2000 + index,
+              ).map((year) => (
+                <MenuItem key={year} value={year}>
+                  {year}
+                </MenuItem>
+              ))}
+            </TextField>
+            <TextField
+              id="extract"
               label="Extracto"
               type="search"
-              onChange={changeSeachExtension}
-            /> */}
+              onChange={changeSeachExtract}
+
+            />
           </div>
           <Button
             variant="contained"
@@ -221,9 +208,6 @@ export default function Search() {
             style={{ marginRight: "10px" }}
           >
             Buscar
-          </Button>
-          <Button color="primary" variant="contained" onClick={verTodos}>
-            Ver Todos
           </Button>
         </Box>
         {loading && (
@@ -234,7 +218,7 @@ export default function Search() {
         {encontrado && !loading ? (
           <DynamicTable
             data={rows}
-            headers={headers}
+            headers={staticHeaders}
             currentPage={0}
             onPageChange={() => console.log("page change")}
             buttonAction={download}

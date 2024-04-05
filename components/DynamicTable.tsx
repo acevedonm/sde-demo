@@ -50,7 +50,6 @@ function DynamicTable({
     translations[header].toUpperCase(),
   );
 
-  //const translatedHeaders = ["prefix","num","year","ext","extract","starter","starterStreet","starterNum","starterLocation","starterCp","date","type","code","status"]
   //Esto se usa por si recibo una accion para ejecutar en el boton de la tabla
   const handleButtonClick = (item) => {
     buttonAction(item);

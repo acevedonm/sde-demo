@@ -22,6 +22,7 @@ import DynamicDialog from "../../components/DynamicDialog";
 import uploadPDF from "../../firebase/uploadPDF";
 import migrateDocuments from "../../firebase/migrate";
 import deleteDocument from "../../firebase/delete";
+import synchronizeFirestoreToAlgolia from "../../firebase/syncAlgoliaIndex";
 
 export default function Dashboard() {
   const [loading, setLoading] = useState(false);
@@ -37,10 +38,13 @@ export default function Dashboard() {
   const [dialogUploadingOpen, setDialogUploadingOpen] = useState(null);
   const [dialogInfo, setDialogInfo] = useState(null);
 
-  const [yearToMigrate, setYearToMigrate] = useState('');
-  
+  const [yearToMigrate, setYearToMigrate] = useState("");
 
   const [recordDelete, setRecordDelete] = useState(null);
+
+  
+  const [yearSync, setYearSync] = useState(null);
+  
 
   const handleFileListPDF = (event) => {
     setSelectedDir(event.target.files);
@@ -68,31 +72,33 @@ export default function Dashboard() {
     setDialogInfo(true);
   };
 
-
-
-
   const handleDelete = async () => {
-    await deleteDocument(recordDelete)
+    await deleteDocument(recordDelete);
   };
 
-  
+
+  const changeYearSync = (event) => {
+    setYearSync(event.target.value);
+  };
+
+
+  const handleSync = async () => {
+    await synchronizeFirestoreToAlgolia(yearSync);
+  };
 
   const changeRecordDelete = (event) => {
     setRecordDelete(event.target.value);
   };
 
-
-
   const changeYearMigration = (event) => {
-    console.log("event.target.value ", event.target.value)
+    console.log("event.target.value ", event.target.value);
     setYearToMigrate(event.target.value);
   };
 
-
   const handleMigration = async () => {
     setDialogUploadingOpen(true);
-    console.log({yearToMigrate})
-    await migrateDocuments(yearToMigrate)
+    console.log({ yearToMigrate });
+    await migrateDocuments(yearToMigrate);
     setDialogUploadingOpen(false);
     setDialogInfo(true);
   };
@@ -101,14 +107,11 @@ export default function Dashboard() {
     "Carga una archivo CSV en la base de datos",
     "Elije un PDF para cargarlo en la base de datos",
     "Seleccione una carpeta con archivos PDF para cargarlos masivamente a la base de datos",
-    
   ]);
 
   const handlerUploadJob = (event) => {
     setSelectedFile(event.target.files[0]);
   };
-
-
 
   const handlerUploadPDFJob = (event) => {
     setLoading(true);
@@ -253,23 +256,25 @@ export default function Dashboard() {
           <Grid item xs={12} md={4}>
             <Card sx={{ minHeight: 150 }}>
               <CardContent>
-                <Typography variant="body2">Ejecutar una migracion por año</Typography>
+                <Typography variant="body2">
+                  Ejecutar una migracion por año
+                </Typography>
               </CardContent>
               <CardActions sx={{ justifyContent: "flex-end" }}>
-              <TextField
-              id="yearToMigration"
-              label="Año"
-              type="text"
-              onChange={changeYearMigration}
-            />
-              <Button
+                <TextField
+                  id="yearToMigration"
+                  label="Año"
+                  type="text"
+                  onChange={changeYearMigration}
+                />
+                <Button
                   size="small"
                   component="label"
                   variant="contained"
                   onClick={handleMigration}
                 >
                   Ejecutar Migracion
-                </Button>        
+                </Button>
               </CardActions>
               <DynamicDialog
                 title="Ejecutando migracion"
@@ -283,11 +288,10 @@ export default function Dashboard() {
                 onConfirm={() => setDialogInfo(false)}
                 onCancel={() => setDialogInfo(false)}
               >
-                  <CircularProgress />
-                 </DynamicDialog>
+                <CircularProgress />
+              </DynamicDialog>
             </Card>
           </Grid>
-
 
           <Grid item xs={12} md={4}>
             <Card sx={{ minHeight: 150 }}>
@@ -295,23 +299,51 @@ export default function Dashboard() {
                 <Typography variant="body2">Elimina un expediente</Typography>
               </CardContent>
               <CardActions sx={{ justifyContent: "flex-end" }}>
-              <TextField
-              id="delete"
-              label="Expediente"
-              type="text"
-              onChange={changeRecordDelete}
-            />
-              <Button
+                <TextField
+                  id="delete"
+                  label="Expediente"
+                  type="text"
+                  onChange={changeRecordDelete}
+                />
+                <Button
                   size="small"
                   component="label"
                   variant="contained"
                   onClick={handleDelete}
                 >
                   Eliminar Expedientes
-                </Button>        
+                </Button>
               </CardActions>
             </Card>
           </Grid>
+          
+
+          
+          <Grid item xs={12} md={4}>
+            <Card sx={{ minHeight: 150 }}>
+              <CardContent>
+                <Typography variant="body2">Sync Algolia firebase</Typography>
+              </CardContent>
+              <CardActions sx={{ justifyContent: "flex-end" }}>
+                <TextField
+                  id="sync"
+                  label="Sync"
+                  type="text"
+                  onChange={changeYearSync}
+                />
+                <Button
+                  size="small"
+                  component="label"
+                  variant="contained"
+                  onClick={handleSync}
+                >
+                  Sync
+                </Button>
+              </CardActions>
+            </Card>
+          </Grid>
+
+
         </Grid>
       )}
     </Container>
