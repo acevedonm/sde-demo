@@ -38,7 +38,8 @@ export default async function migrateDocuments(year) {
 
     data.starterNum = parseInt(data.starterNum, 10) || 0;
 
-    data.ext = data.ext === "madre" ? 0 : parseInt(data.ext, 10) || -1;
+    const madre = (data.ext === "madre" || data.ext === "MADRE")
+    data.ext = madre ? 0 : parseInt(data.ext, 10)
 
     let targetCollectionPath = `records/records_${data.file ? "complete" : "incomplete"}/${year}`;
 
