@@ -159,7 +159,7 @@ export default function Dashboard() {
               <CardContent>
                 <Typography variant="body2">
                   {" "}
-                  Elije un PDF para cargarlo en la base de datos"
+                  Elije un PDF para cargarlo en la base de datos
                 </Typography>
               </CardContent>
               <CardActions sx={{ justifyContent: "flex-end" }}>
