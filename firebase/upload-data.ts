@@ -11,6 +11,7 @@ import FieldsUpload from "../src/interfaces/fieldsUpload";
 
 const db = getFirestore(firebaseApp);
 
+//esta funcion recibe los datos y los carga en la coleccion expedientes, es utilizada en la carga masiva de csv
 export default async function uploadData(data: FieldsUpload) {
   let documentId = doc(collection(db, "expedientes")).id;
   let ref = doc(db, "expedientes", documentId);

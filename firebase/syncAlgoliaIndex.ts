@@ -16,7 +16,7 @@ export default async function synchronizeFirestoreToAlgolia(year) {
   }
   const recordsCollection = `${process.env.NEXT_PUBLIC_FIREBASE_COLLECTION_RECORDS}/${year}`;
   const algoliaIndex = algoliaClient.initIndex(
-    `${process.env.NEXT_PUBLIC_ALGOLIA_INDEX}_${year}`,
+    `${process.env.NEXT_PUBLIC_ALGOLIA_INDEX}`,
   );
 
   const querySnapshot = await getDocs(collection(db, recordsCollection));
@@ -27,6 +27,7 @@ export default async function synchronizeFirestoreToAlgolia(year) {
       objectID: doc.id,
       extract: doc.data().extract,
       num: doc.data().num,
+      year: doc.data().year,
       starter: doc.data().starter,
     };
     records.push(record);

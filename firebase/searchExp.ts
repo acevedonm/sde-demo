@@ -6,10 +6,7 @@ import {
   where,
   limit,
   startAfter,
-  collectionGroup,
-  FieldPath,
 } from "firebase/firestore";
-import FieldsUpload from "../src/interfaces/fieldsUpload";
 import firebaseApp from "./client";
 import _ from "lodash";
 import FieldsSearch from "../src/interfaces/fieldsSearch";
@@ -22,7 +19,6 @@ export default async function searchExp(fieldsSearch) {
   return await findWherePagination(fieldsSearch, 0, 30);
 }
 
-//-------------------------------------------- EJEMPLO DE PAGINACION
 async function getDocumentReference(documentIndex, recordsCollection) {
   const querySnapshot = await getDocs(query(collection(db, recordsCollection)));
   const documents = querySnapshot.docs;
@@ -104,13 +100,15 @@ export async function findWithExtract(
 
   if (fieldsSearch.extract) {
     const index = algoliaClient.initIndex(
-      `${process.env.NEXT_PUBLIC_ALGOLIA_INDEX}_${fieldsSearch.year}`,
+      `${process.env.NEXT_PUBLIC_ALGOLIA_INDEX}`,
     );
 
     try {
+
       const algoliaResults = await index.search(fieldsSearch.extract, {
         hitsPerPage: pageSize,
         page: pageNumber,
+        filters: `year:${fieldsSearch.year}`
       });
 
       documentNums = algoliaResults.hits.map((hit) => hit["num"]);
