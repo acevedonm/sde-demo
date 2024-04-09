@@ -104,11 +104,10 @@ export async function findWithExtract(
     );
 
     try {
-
       const algoliaResults = await index.search(fieldsSearch.extract, {
         hitsPerPage: pageSize,
         page: pageNumber,
-        filters: `year:${fieldsSearch.year}`
+        filters: `year:${fieldsSearch.year}`,
       });
 
       documentNums = algoliaResults.hits.map((hit) => hit["num"]);

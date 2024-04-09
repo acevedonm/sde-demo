@@ -5,7 +5,6 @@ import uploadData from "./upload-data";
 
 const storage = getStorage(firebaseApp);
 
-
 //Esta funcion carga los datos de un csv en la base de datos
 export default async function uploaderJob(file, setLoading) {
   Papa.parse(file, {

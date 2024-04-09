@@ -141,7 +141,6 @@ export default function Search() {
   };
 
   return (
-    /*  Aca va el login */
     <>
       {alert ? <IconAlerts></IconAlerts> : <></>}
       <Container>

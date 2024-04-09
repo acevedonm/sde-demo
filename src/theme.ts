@@ -65,6 +65,17 @@ const theme = createTheme({
         },
       },
     },
+    MuiCard: {
+      defaultProps: {
+        // Estilos predeterminados para las tarjetas
+        style: {
+          minHeight: "200px", // Establece tu altura mínima deseada aquí
+          display: "flex",
+          flexDirection: "column",
+          height: "100%", // Asegura que la tarjeta ocupe todo el espacio disponible en su contenedor
+        },
+      },
+    },
   },
 });
 
