@@ -9,6 +9,7 @@ import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import Typography from "@mui/material/Typography";
 import SourceIcon from "@mui/icons-material/Source";
+import FeatureCards from "../components/FeatureCards";
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
@@ -48,8 +49,7 @@ function BootstrapDialogTitle(props: DialogTitleProps) {
     </DialogTitle>
   );
 }
-
-export default function Home() {
+function Welcome() {
   const [open, setOpen] = React.useState(false);
 
   const [tutorial, setTutorial] = React.useState(false);
@@ -90,6 +90,15 @@ export default function Home() {
           </Button>
         </DialogActions>
       </BootstrapDialog>
+    </div>
+  );
+}
+
+export default function Home() {
+  return (
+    <div>
+      <Welcome />
+      <FeatureCards />
     </div>
   );
 }
