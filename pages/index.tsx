@@ -10,6 +10,8 @@ import CloseIcon from "@mui/icons-material/Close";
 import Typography from "@mui/material/Typography";
 import SourceIcon from "@mui/icons-material/Source";
 import FeatureCards from "../components/FeatureCards";
+import Charts from "../components/Charts";
+import Divider from "../components/Divider";
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
@@ -99,6 +101,7 @@ export default function Home() {
     <div>
       <Welcome />
       <FeatureCards />
+      <Divider text= "Graficos y estadisticas" />
     </div>
   );
 }

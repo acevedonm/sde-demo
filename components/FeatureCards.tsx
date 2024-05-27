@@ -12,21 +12,21 @@ export default function FeatureCards() {
         {
             title: "Carga de Expedientes",
             description: "Carga tus expedientes con un solo click",
-            imageUrl: "/assets/red.png",
+            imageUrl: "/assets/Carga.jpg",
             href: "/upload",
             available: true
         },
         {
             title: "Busqueda",
             description: "Busca tus expedientes con un solo click",
-            imageUrl: "/assets/green.png",
+            imageUrl: "/assets/Busqueda.jpg",
             href: "/search",
             available: true
         },
         {
-            title: "Archivado",
-            description: "Archiva tus expedientes con un solo click",
-            imageUrl: "/assets/blue.jpg",
+            title: "Dashboard",
+            description: "Ingresa al dashboard",
+            imageUrl: "/assets/Archivo.jpg",
             href: "/search",
             available: false
         },
@@ -34,17 +34,18 @@ export default function FeatureCards() {
 
     return (
         <Container maxWidth={false} sx={{ width: '95%', mt: 5 }}>
-            <Grid container spacing={2} columns={{ xs: 1, md: 3 }}>
+            <Grid container spacing={2} columns={{ xs: 1, sm:1 ,md: 3 }}>
                 {features.map((feature) => (
                     <Grid key={feature.title} xs={1}>
                         <Box sx={{ position: 'relative' }}>
-                            <Card>
+                            <Card sx={{ opacity: feature.available ? 1 : 0.4 }}>
                                 <CardActionArea href={feature.available ? feature.href : '#'} disabled={!feature.available}>
                                     <CardMedia
                                         component="img"
                                         height="140"
                                         image={feature.imageUrl}
                                         alt={feature.title}
+                                        sx={{ objectFit: 'fill'}}
                                     />
                                     <CardContent>
                                         <Typography gutterBottom variant="h5" component="div">
@@ -64,15 +65,13 @@ export default function FeatureCards() {
                                         left: 0,
                                         width: '100%',
                                         height: '100%',
-                                        backgroundColor: 'rgba(0, 0, 0, 0.5)',
-                                        color: 'white',
                                         display: 'flex',
                                         alignItems: 'center',
                                         justifyContent: 'center',
                                         borderRadius: '4px',
+                                        pointerEvents: 'none'
                                     }}
                                 >
-                                    <Typography variant="h6">No disponible</Typography>
                                 </Box>
                             )}
                         </Box>
