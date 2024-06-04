@@ -102,6 +102,7 @@ export default function Home() {
       <Welcome />
       <FeatureCards />
       <Divider text= "Graficos y estadisticas" />
+      <Charts />
     </div>
   );
 }
