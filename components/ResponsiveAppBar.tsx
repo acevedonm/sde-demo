@@ -14,6 +14,7 @@ import MenuItem from "@mui/material/MenuItem";
 import firebaseApp from "../firebase/client";
 import { getAuth } from "firebase/auth";
 import { useRouter } from "next/router";
+import Link from '@mui/material/Link';
 
 const pages = ["Buscador", "Carga de Expedientes", "Administracion "];
 const settings = ["Perfil", "Configuracion", "Cerrar Sesión"];
@@ -124,15 +125,17 @@ function ResponsiveAppBar() {
               </MenuItem> */}
             </Menu>
           </Box>
-
-          <Box
-            component="img"
-            sx={{
-              height: "12vh",
-            }}
-            alt="Your logo."
-            src="../assets/logo_gestion.png"
-          />
+          
+          <Link href="/">
+            <Box
+              component="img"
+              sx={{
+                height: "12vh",
+              }}
+              alt="Your logo."
+              src="../assets/logo_gestion.png"
+            />
+          </Link>
 
           <Box
             sx={{
