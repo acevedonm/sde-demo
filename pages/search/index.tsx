@@ -54,6 +54,7 @@ export default function Search() {
 
   const [alert, setAlert] = useState(false);
   const [rows, setRows] = useState([]);
+  const [currentPage, setCurrentPage] = useState(0);
 
   let staticHeaders = [
     "prefix",
@@ -97,9 +98,10 @@ export default function Search() {
     setRows(newData);
 
     setEncontrado(true);
+    setCurrentPage(0);
   };
 
-  const buscar = async () => {
+  const search = async () => {
     setLoading(true);
     const newData = await searchExp(fieldsSearch);
 
@@ -112,7 +114,9 @@ export default function Search() {
     } else {
       setAlert(false);
     }
+    setCurrentPage(0);
   };
+  
 
   const changeSeachStarter = (event) => {
     setFieldsSearch({
@@ -138,6 +142,9 @@ export default function Search() {
       ...fieldsSearch,
       extract: event.target.value,
     });
+  };
+  const handlePageChange = (event, newPage) => {
+    setCurrentPage(newPage);
   };
 
   return (
@@ -202,7 +209,7 @@ export default function Search() {
           </div>
           <Button
             variant="contained"
-            onClick={buscar}
+            onClick={search}
             style={{ marginRight: "10px" }}
           >
             Buscar
@@ -217,8 +224,8 @@ export default function Search() {
           <DynamicTable
             data={rows}
             headers={staticHeaders}
-            currentPage={0}
-            onPageChange={() => console.log("page change")}
+            currentPage={currentPage}
+            onPageChange={handlePageChange}
             buttonAction={download}
           ></DynamicTable>
         ) : null}

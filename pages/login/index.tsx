@@ -92,7 +92,7 @@ export default function Login() {
             alt="Your logo."
             src="../assets/logo_gestion_black.png"
           />
-          <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
+          <Avatar sx={{ m: 1, bgcolor: "secondary.contrastText" }}>
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5" sx={{ fontSize: "2.3vh" }}>

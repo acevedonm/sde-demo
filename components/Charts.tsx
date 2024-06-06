@@ -6,7 +6,7 @@ import Container from "@mui/material/Container";
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Unstable_Grid2'; // Grid version 2
 import Typography from '@mui/material/Typography';
-
+import { useTheme } from '@mui/material/styles';
 
 const chartData = [
     {
@@ -16,7 +16,6 @@ const chartData = [
             xAxis: [{ data: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12] }],
             series: [{ data: [0, 1230, 4000, 8000, 9300, 11500, 13500, 15000, 16700, 18500, 19000, 19500, 20000] }],
             height: 350
-            
         }
     },
     {
@@ -57,6 +56,8 @@ const chartData = [
 ];
 
 const ChartComponent = ({ type, props, description }) => {
+    const theme = useTheme();
+
     let Chart;
     switch (type) {
         case 'LineChart':
@@ -72,9 +73,30 @@ const ChartComponent = ({ type, props, description }) => {
             return null;
     }
 
+    // Añadir colores del tema a las series
+    const modifiedProps = {
+        ...props,
+        series: props.series.map((serie, index) => {
+            if (type === 'PieChart') {
+                return {
+                    ...serie,
+                    data: serie.data.map((dataPoint, dataIndex) => ({
+                        ...dataPoint,
+                        color: dataIndex === 0 ? theme.palette.primary.main : theme.palette.secondary.main
+                    }))
+                };
+            } else {
+                return {
+                    ...serie,
+                    color: theme.palette.primary.main
+                };
+            }
+        })
+    };
+
     return (
         <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', minHeight: 400 }}>
-            <Chart {...props} />
+            <Chart {...modifiedProps} />
             <Typography variant="subtitle1" align="center">
                 {description}
             </Typography>
