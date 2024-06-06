@@ -54,7 +54,6 @@ function DynamicTable({
   const handleButtonClick = (item) => {
     buttonAction(item);
   };
-
   return (
     <div style={{ maxWidth: "100%", overflowX: "auto" }}>
       <Table style={{ minWidth: 650 }}>
@@ -67,7 +66,7 @@ function DynamicTable({
           </TableRow>
         </TableHead>
         <TableBody>
-          {data.map((item, index) => (
+          {data.slice(currentPage * pageSize, (currentPage + 1) * pageSize).map((item, index) => (
             <TableRow key={index}>
               <TableCell align="right">
                 <IconButton onClick={() => handleButtonClick(item)}>
