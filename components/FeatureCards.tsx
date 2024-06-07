@@ -38,11 +38,11 @@ export default function FeatureCards() {
                 {features.map((feature) => (
                     <Grid key={feature.title} xs={1}>
                         <Box sx={{ position: 'relative' }}>
-                            <Card sx={{ opacity: feature.available ? 1 : 0.4 }}>
+                            <Card sx={{ minHeight: 'unset !important', opacity: feature.available ? 1 : 0.4 }}>
                                 <CardActionArea href={feature.available ? feature.href : '#'} disabled={!feature.available}>
                                     <CardMedia
                                         component="img"
-                                        height="140"
+                                        max-height="140"    
                                         image={feature.imageUrl}
                                         alt={feature.title}
                                         sx={{ objectFit: 'fill'}}
