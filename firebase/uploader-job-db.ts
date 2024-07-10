@@ -1,7 +1,7 @@
 import { getStorage } from "firebase/storage";
 import firebaseApp from "./client";
 import Papa from "papaparse";
-import uploadData from "./upload-data";
+import uploadData from "./upload-csv";
 
 const storage = getStorage(firebaseApp);
 

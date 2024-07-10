@@ -19,7 +19,7 @@ import {
 import { Grid } from "@mui/material";
 import uploaderJob from "../../../firebase/uploader-job-db";
 import DynamicDialog from "../../../components/DynamicDialog";
-import uploadPDF from "../../../firebase/uploadPDF";
+import uploadPDF from "../../../firebase/uploadPDF2";
 import migrateDocuments from "../../../firebase/migrate";
 import deleteDocument from "../../../firebase/delete";
 import synchronizeFirestoreToAlgolia from "../../../firebase/syncAlgoliaIndex";
@@ -195,7 +195,6 @@ export default function DataBase() {
               </CardContent>
               <CardActions sx={{ justifyContent: "flex-end" }}>
                 <Button
-                  disabled
                   size="small"
                   component="label"
                   variant="contained"
