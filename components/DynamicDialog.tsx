@@ -10,19 +10,31 @@ function DynamicDialog({
   title = "",
   context = "",
   onConfirm = null,
-  onCancel = null,
+  onGenericAction = null,
+  genericActionLabel = "",
   open,
   children,
 }) {
+  const handleClose = (event, reason) => {
+    if (reason === "backdropClick" || reason === "escapeKeyDown") {
+      return;
+    }
+    if (onGenericAction) {
+      onGenericAction();
+    }
+  };
+
   return (
-    <Dialog open={open} onClose={onCancel}>
+    <Dialog open={open} onClose={handleClose}>
       <DialogTitle>{title}</DialogTitle>
       <DialogContent>
         <DialogContentText>{context}</DialogContentText>
-        <DialogContentText>{children}</DialogContentText>
+        {children}
       </DialogContent>
       <DialogActions>
-        {onCancel && <Button onClick={onCancel}>Cancelar</Button>}
+        {onGenericAction && (
+          <Button onClick={onGenericAction}>{genericActionLabel}</Button>
+        )}
         {onConfirm && (
           <Button onClick={onConfirm} variant="contained" autoFocus>
             Confirmar
