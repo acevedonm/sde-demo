@@ -117,28 +117,31 @@ export default function DataBase() {
 
   const downloadReport = () => {
     const csvRows = [];
-    const headers = ["Cargados", "No Cargados"];
+    const headers = ["Archivo", "Estado"];
     csvRows.push(headers.join(','));
-
-    const maxLength = Math.max(cargados.length, noCargados.length);
-    for (let i = 0; i < maxLength; i++) {
-      const cargado = cargados[i] || "";
-      const noCargado = noCargados[i] || "";
-      csvRows.push([cargado, noCargado].join(','));
-    }
-
+  
+    // Agregar los cargados al reporte
+    cargados.forEach(cargado => {
+      csvRows.push([cargado, "Cargado"].join(','));
+    });
+  
+    // Agregar los no cargados al reporte
+    noCargados.forEach(noCargado => {
+      csvRows.push([noCargado, "No Cargado"].join(','));
+    });
+  
     const csvContent = csvRows.join("\n");
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement("a");
     const url = URL.createObjectURL(blob);
-
+  
     link.setAttribute("href", url);
     link.setAttribute("download", "reporte_carga.csv");
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
   };
-
+  
 
   return (
     <Container>
@@ -257,7 +260,10 @@ export default function DataBase() {
               <DynamicDialog
                 title="Informacion de carga"
                 open={dialogInfo.open && dialogInfo.dialog == "uploadPDF"}
-                onConfirm={() => setDialogInfo({ open: false, dialog: "" })}
+                onConfirm={() => {setDialogInfo({ open: false, dialog: "" })
+                setCargados([]);
+                setNoCargados([]);
+                }}
                 onGenericAction={() => {
                   setDialogInfo({ open: false, dialog: "" });
                   downloadReport();
