@@ -115,6 +115,31 @@ export default function DataBase() {
     //uploadPDFS
   };
 
+  const downloadReport = () => {
+    const csvRows = [];
+    const headers = ["Cargados", "No Cargados"];
+    csvRows.push(headers.join(','));
+
+    const maxLength = Math.max(cargados.length, noCargados.length);
+    for (let i = 0; i < maxLength; i++) {
+      const cargado = cargados[i] || "";
+      const noCargado = noCargados[i] || "";
+      csvRows.push([cargado, noCargado].join(','));
+    }
+
+    const csvContent = csvRows.join("\n");
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement("a");
+    const url = URL.createObjectURL(blob);
+
+    link.setAttribute("href", url);
+    link.setAttribute("download", "reporte_carga.csv");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+
   return (
     <Container>
       {loading ? (
@@ -139,6 +164,7 @@ export default function DataBase() {
                 <Button size="small" component="label" variant="contained">
                   Cargar DB
                   <input
+                    disabled
                     hidden
                     multiple
                     accept=".csv"
@@ -232,7 +258,11 @@ export default function DataBase() {
                 title="Informacion de carga"
                 open={dialogInfo.open && dialogInfo.dialog == "uploadPDF"}
                 onConfirm={() => setDialogInfo({ open: false, dialog: "" })}
-                onCancel={() => setDialogInfo({ open: false, dialog: "" })}
+                onGenericAction={() => {
+                  setDialogInfo({ open: false, dialog: "" });
+                  downloadReport();
+                }}
+                genericActionLabel="Descargar Reporte"
               >
                 <Grid container spacing={2}>
                   <Grid item xs={6}>
