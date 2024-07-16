@@ -1,32 +1,36 @@
-import { getStorage } from "firebase/storage";
-import firebaseApp from "./client";
 import Papa from "papaparse";
 import uploadData from "./upload-csv";
 
-const storage = getStorage(firebaseApp);
-
-//Esta funcion carga los datos de un csv en la base de datos
+// Esta función carga los datos de un csv en la base de datos
 export default async function uploaderJob(file, setLoading) {
   Papa.parse(file, {
     header: true,
     skipEmptyLines: true,
     complete: function (results) {
-      const rowsArray = [];
-      const valuesArray = [];
-      let indexToUse;
-      // Iterating data to get column name and their values
-      results.data.map((d, index) => {
-        indexToUse = index;
-        console.log("cargando DB... ");
-        console.log("Subiendo datos de expediente: ", d);
-        d.file = "";
-        uploadData(d);
-        console.log({ d });
-        rowsArray.push(Object.keys(d));
-        valuesArray.push(Object.values(d));
+      const dataByYear = {};
+
+      // Organizar datos por año
+      results.data.forEach((d) => {
+        const year = d.año; // Asegúrate de reemplazar 'año' con el nombre real de la columna del año
+        if (!dataByYear[year]) {
+          dataByYear[year] = [];
+        }
+        dataByYear[year].push(d);
       });
 
-      console.log("registros guardados: " + indexToUse);
+      // Iterar sobre grupos por año y pasarlos a otra función
+      Object.keys(dataByYear).forEach((year) => {
+        console.log(`Procesando datos para el año ${year}`);
+        const dataForYear = dataByYear[year];
+        dataForYear.forEach((d, index) => {
+          console.log("Subiendo datos de expediente: ", d);
+          d.file = "";
+          uploadData(d);
+          console.log({ d });
+        });
+        console.log(`Registros guardados para el año ${year}: ${dataForYear.length}`);
+      });
+
       setLoading(false);
     },
   });
