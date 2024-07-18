@@ -167,7 +167,6 @@ export default function DataBase() {
                 <Button size="small" component="label" variant="contained">
                   Cargar DB
                   <input
-                    disabled
                     hidden
                     multiple
                     accept=".csv"
