@@ -1,5 +1,5 @@
-import { Container, MenuItem, Tooltip } from "@mui/material";
-import { useState, useCallback, useEffect } from "react";
+import { Container, MenuItem } from "@mui/material";
+import { useState } from "react";
 import TextField from "@mui/material/TextField";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -7,7 +7,7 @@ import { FilesService } from "../../utils/files.service";
 import Stack from "@mui/material/Stack";
 import Alert from "@mui/material/Alert";
 import AlertTitle from "@mui/material/AlertTitle";
-import { getAllExp, getExpedientesPorPagina } from "../../firebase/getAllExp";
+import { getExpedientesPorPagina } from "../../firebase/getAllExp";
 import LinearProgress from "@mui/material/LinearProgress";
 import searchExp from "../../firebase/searchExp";
 import { Records } from "../../src/interfaces/records";
@@ -17,8 +17,6 @@ import DynamicTable from "../../components/DynamicTable";
 const storage = getStorage();
 
 function download(data: Records) {
-  //NOTA: Aca estas armando la url de descarga con los campos del documento, cuando en realidad en doc.file esta la url, fijate
-  //que vuelta le podemos dar a esto ?
   getDownloadURL(
     ref(
       storage,
@@ -51,7 +49,6 @@ export default function Search() {
     extract: "",
   });
   const [loading, setLoading] = useState(false);
-
   const [alert, setAlert] = useState(false);
   const [rows, setRows] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
@@ -89,14 +86,11 @@ export default function Search() {
   }
 
   const verTodos = async () => {
-    //seteo nuevas rows setRows
     setAlert(false);
     setLoading(true);
-    //cambiar el siguiente false por un true para que filtre solo los que tienen pdf
     const newData = await getExpedientesPorPagina(0, 10, true);
     setLoading(false);
     setRows(newData);
-
     setEncontrado(true);
     setCurrentPage(0);
   };
@@ -104,19 +98,23 @@ export default function Search() {
   const search = async () => {
     setLoading(true);
     const newData = await searchExp(fieldsSearch);
-
     setRows(newData);
-
     setEncontrado(true);
     setLoading(false);
-    if (newData.length == 0) {
+    if (newData.length === 0) {
       setAlert(true);
     } else {
       setAlert(false);
     }
     setCurrentPage(0);
   };
-  
+
+  const handleKeyDown = (event) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      search();
+    }
+  };
 
   const changeSeachStarter = (event) => {
     setFieldsSearch({
@@ -131,25 +129,29 @@ export default function Search() {
       num: event.target.value,
     });
   };
+
   const changeSeachYear = (event) => {
     setFieldsSearch({
       ...fieldsSearch,
       year: event.target.value,
     });
   };
+
   const changeSeachExtract = (event) => {
     setFieldsSearch({
       ...fieldsSearch,
       extract: event.target.value,
     });
   };
+
   const handlePageChange = (event, newPage) => {
     setCurrentPage(newPage);
   };
 
+
   return (
     <>
-      {alert ? <IconAlerts></IconAlerts> : <></>}
+      {alert ? <IconAlerts /> : null}
       <Container>
         <Box
           component="form"
@@ -172,6 +174,7 @@ export default function Search() {
               label="N°"
               type="search"
               onChange={changeSeachNum}
+              onKeyDown={handleKeyDown} 
             />
 
             <TextField
@@ -185,7 +188,7 @@ export default function Search() {
                 MenuProps: {
                   PaperProps: {
                     style: {
-                      maxHeight: 200, // Ajusta la altura máxima del menú desplegable
+                      maxHeight: 200,
                     },
                   },
                 },
@@ -205,6 +208,7 @@ export default function Search() {
               label="Extracto"
               type="search"
               onChange={changeSeachExtract}
+              onKeyDown={handleKeyDown}
             />
           </div>
           <Button
@@ -227,7 +231,7 @@ export default function Search() {
             currentPage={currentPage}
             onPageChange={handlePageChange}
             buttonAction={download}
-          ></DynamicTable>
+          />
         ) : null}
       </Container>
     </>
