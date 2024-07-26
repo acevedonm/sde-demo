@@ -34,6 +34,7 @@ export async function findWherePagination(
   fieldsSearch: FieldsSearch,
   pageNumber: number = 0,
   pageSize: number = 10,
+  isIncomplete: boolean = false,
 ) {
   const { num, year, ext }: FieldsSearch = fieldsSearch;
 
@@ -45,7 +46,7 @@ export async function findWherePagination(
     console.log("Faltan campos de busqueda");
     return [];
   }
-
+ 
   if (fieldsSearch.extract) {
     return await findWithExtract(fieldsSearch, pageNumber, pageSize);
   }
@@ -53,7 +54,9 @@ export async function findWherePagination(
   const startAfterDocument =
     pageNumber > 1 ? (pageNumber - 1) * pageSize : null;
 
-  const recordsCollection = `${process.env.NEXT_PUBLIC_FIREBASE_COLLECTION_RECORDS}/${fieldsSearch.year}`;
+    const recordsCollection = isIncomplete
+    ? `${process.env.NEXT_PUBLIC_FIREBASE_COLLECTION_RECORDS_INCOMPLETE}/${fieldsSearch.year}`
+    : `${process.env.NEXT_PUBLIC_FIREBASE_COLLECTION_RECORDS}/${fieldsSearch.year}`;
 
   let pageQuery = query(collection(db, recordsCollection), limit(pageSize));
 
