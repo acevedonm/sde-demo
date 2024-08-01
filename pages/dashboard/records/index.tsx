@@ -7,13 +7,14 @@ import { FilesService } from "../../../utils/files.service";
 import Stack from "@mui/material/Stack";
 import Alert from "@mui/material/Alert";
 import AlertTitle from "@mui/material/AlertTitle";
-import { getExpedientesPorPagina } from "../../../firebase/getAllExp";
 import LinearProgress from "@mui/material/LinearProgress";
 import searchExp from "../../../firebase/searchExp";
 import { Records } from "../../../src/interfaces/records";
 import { getStorage, ref, getDownloadURL } from "firebase/storage";
 import DynamicTable from "../../../components/DynamicTable";
-import { handleDelete, handleModify } from "../../../firebase/crud"; // Importa las funciones aquí
+import { handleDelete, handleModify, handleCreateNew } from "../../../firebase/crud";
+import DynamicDialog from "../../../components/DynamicDialog";
+import Switch from "@mui/material/Switch";
 
 const storage = getStorage();
 
@@ -53,6 +54,29 @@ export default function Search() {
   const [alert, setAlert] = useState(false);
   const [rows, setRows] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
+  const [openDialog, setOpenDialog] = useState({
+    delete: false,
+    modify: false,
+    create: false,
+  });
+  const [modifyData, setModifyData] = useState({});
+  const [newData, setNewData] = useState({
+    prefix: "4069",
+    num: "",
+    year: new Date().getFullYear(),
+    ext: "0",
+    extract: "",
+    starter: "",
+    starterStreet: "",
+    starterNum: "0",
+    starterLocation: "",
+    starterCp: "",
+    type: "",
+    date: "",
+    status: "",
+  });
+  const [isComplete, setIsComplete] = useState(true);
+  const [isNewComplete, setIsNewComplete] = useState(true);
 
   let staticHeaders = [
     "prefix",
@@ -61,6 +85,7 @@ export default function Search() {
     "extract",
     "ext",
     "starter",
+    "starterStreet",
     "starterNum",
     "starterLocation",
     "starterCp",
@@ -86,23 +111,13 @@ export default function Search() {
     );
   }
 
-  const verTodos = async () => {
-    setAlert(false);
-    setLoading(true);
-    const newData = await getExpedientesPorPagina(0, 10, true);
-    setLoading(false);
-    setRows(newData);
-    setEncontrado(true);
-    setCurrentPage(0);
-  };
-
   const search = async () => {
     if (fieldsSearch.num.trim() === "") {
       setAlert(true);
       return;
     }
     setLoading(true);
-    const newData = await searchExp(fieldsSearch);
+    const newData = await searchExp(fieldsSearch, isComplete);
     setRows(newData);
     setEncontrado(true);
     setLoading(false);
@@ -135,13 +150,49 @@ export default function Search() {
     });
   };
 
-  const handlePageChange = (event, newPage) => {
-    setCurrentPage(newPage);
+  const handleOpenDialog = (dialogType) => {
+    if (dialogType === "modify" && rows.length > 0) {
+      setModifyData(rows[0]); // Asigna el primer expediente a modificar
+    }
+    setOpenDialog((prev) => ({ ...prev, [dialogType]: true }));
   };
 
-  const handleCreateNew = () => {
-    // Lógica para crear un nuevo expediente
-    console.log("Crear nuevo expediente");
+  const handleCloseDialog = (dialogType) => {
+    setOpenDialog((prev) => ({ ...prev, [dialogType]: false }));
+  };
+
+  const handleConfirmCreate = async () => {
+    await handleCreateNew(newData, isNewComplete);
+    setOpenDialog((prev) => ({ ...prev, create: false }));
+    // Actualiza la tabla si es necesario
+  };
+
+  const handleChangeNewData = (e) => {
+    const { name, value } = e.target;
+    setNewData({ ...newData, [name]: value });
+  };
+
+  const handleConfirmDelete = async () => {
+    await handleDelete(rows, setRows, isComplete);
+    setOpenDialog((prev) => ({ ...prev, delete: false }));
+  };
+
+  const handleConfirmModify = async () => {
+    await handleModify(rows, setRows, modifyData, isComplete);
+    setOpenDialog((prev) => ({ ...prev, modify: false }));
+  };
+
+  const handleChangeModifyData = (e) => {
+    const { name, value } = e.target;
+    setModifyData({ ...modifyData, [name]: value });
+  };
+
+  const handleSwitchChange = (event) => {
+    setIsComplete(event.target.checked);
+  };
+
+  const handleNewSwitchChange = (event) => {
+    setIsNewComplete(event.target.checked);
   };
 
   return (
@@ -196,11 +247,19 @@ export default function Search() {
             </TextField>
             <Button
               variant="contained"
-              onClick={handleCreateNew}
+              onClick={() => handleOpenDialog("create")}
               style={{ marginLeft: "10px", marginTop: "10px", height: "40px" }}
             >
-             + Nuevo expediente
+              + Nuevo expediente
             </Button>
+          </div>
+          <div>
+            <Switch
+              checked={isComplete}
+              onChange={handleSwitchChange}
+              inputProps={{ "aria-label": "controlled" }}
+            />
+            {isComplete ? "Completo" : "Incompleto"}
           </div>
           <Button
             variant="contained"
@@ -221,14 +280,14 @@ export default function Search() {
               data={rows}
               headers={staticHeaders}
               currentPage={currentPage}
-              onPageChange={handlePageChange}
+              onPageChange={setCurrentPage}
               buttonAction={download}
             />
             <Box sx={{ marginTop: 2 }}>
               <Button sx={{ marginRight: 2 }}
                 variant="contained"
                 color="primary"
-                onClick={() => handleModify(rows)} // Usa la función importada aquí
+                onClick={() => handleOpenDialog("modify")}
                 disabled={rows.length === 0}
               >
                 Modificar
@@ -236,7 +295,7 @@ export default function Search() {
               <Button
                 variant="contained"
                 color="secondary"
-                onClick={() => handleDelete(rows, setRows)} // Usa la función importada aquí
+                onClick={() => handleOpenDialog("delete")}
                 disabled={rows.length === 0}
               >
                 Eliminar
@@ -245,6 +304,60 @@ export default function Search() {
           </>
         ) : null}
       </Container>
+
+      <DynamicDialog
+        open={openDialog.delete}
+        title="Confirmar eliminación"
+        context="¿Está seguro de que desea eliminar este expediente?"
+        onConfirm={handleConfirmDelete}
+        onGenericAction={() => handleCloseDialog("delete")}
+        genericActionLabel="Cancelar" children={undefined}      />
+
+      <DynamicDialog
+        open={openDialog.modify}
+        title="Modificar expediente"
+        context="Realice los cambios necesarios y confirme la modificación."
+        onConfirm={handleConfirmModify}
+        onGenericAction={() => handleCloseDialog("modify")}
+        genericActionLabel="Cancelar"
+      >
+        {staticHeaders.map((header) => (
+          <TextField
+            sx={{ margin: 1 }}
+            key={header}
+            label={header}
+            name={header}
+            value={modifyData[header] || ""}
+            onChange={handleChangeModifyData}
+          />
+        ))}
+      </DynamicDialog>
+
+      <DynamicDialog
+        open={openDialog.create}
+        title="Crear nuevo expediente"
+        context="Complete los campos para crear un nuevo expediente."
+        onConfirm={handleConfirmCreate}
+        onGenericAction={() => handleCloseDialog("create")}
+        genericActionLabel="Cancelar"
+      >
+        <Switch
+          checked={isNewComplete}
+          onChange={handleNewSwitchChange}
+          inputProps={{ "aria-label": "controlled" }}
+        />
+        {isNewComplete ? "Completo" : "Incompleto"}
+        {staticHeaders.map((header) => (
+          <TextField
+            sx={{ margin: 1 }}
+            key={header}
+            label={header}
+            name={header}
+            value={newData[header] || ""}
+            onChange={handleChangeNewData}
+          />
+        ))}
+      </DynamicDialog>
     </>
   );
 }
