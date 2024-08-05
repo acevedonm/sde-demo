@@ -308,10 +308,11 @@ export default function Search() {
       <DynamicDialog
         open={openDialog.delete}
         title="Confirmar eliminación"
-        context="¿Está seguro de que desea eliminar este expediente?"
         onConfirm={handleConfirmDelete}
         onGenericAction={() => handleCloseDialog("delete")}
-        genericActionLabel="Cancelar" children={undefined}      />
+        genericActionLabel="Cancelar">
+          ¿Está seguro de que desea eliminar este expediente?
+        </DynamicDialog>
 
       <DynamicDialog
         open={openDialog.modify}
