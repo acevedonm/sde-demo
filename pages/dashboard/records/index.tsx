@@ -188,11 +188,11 @@ export default function Search() {
   };
 
   const handleSwitchChange = (event) => {
-    setIsComplete(event.target.checked);
+    setIsComplete(event.target.checked); // Invertir el valor de isComplete
   };
 
   const handleNewSwitchChange = (event) => {
-    setIsNewComplete(event.target.checked);
+    setIsNewComplete(event.target.checked); // Invertir el valor de isNewComplete
   };
 
   return (
@@ -343,11 +343,11 @@ export default function Search() {
         genericActionLabel="Cancelar"
       >
         <Switch
-          checked={isNewComplete}
+          checked={isNewComplete} // Invertir la visualización del switch
           onChange={handleNewSwitchChange}
           inputProps={{ "aria-label": "controlled" }}
         />
-        {isNewComplete ? "Completo" : "Incompleto"}
+        {isNewComplete ? "Completo" : "Incompleto"} {/* Invertir la etiqueta */}
         {staticHeaders.map((header) => (
           <TextField
             sx={{ margin: 1 }}
