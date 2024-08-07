@@ -15,7 +15,7 @@ import { Records } from "../src/interfaces/records";
 
 const db = getFirestore(firebaseApp);
 
-export default async function searchExp(fieldsSearch, isComplete = false) {
+export default async function searchExp(fieldsSearch, isComplete = true) {
   return await findWherePagination(fieldsSearch, 0, 30, isComplete);
 }
 
