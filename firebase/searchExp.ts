@@ -15,8 +15,8 @@ import { Records } from "../src/interfaces/records";
 
 const db = getFirestore(firebaseApp);
 
-export default async function searchExp(fieldsSearch, isIncomplete = false) {
-  return await findWherePagination(fieldsSearch, 0, 30, isIncomplete);
+export default async function searchExp(fieldsSearch, isComplete = true) {
+  return await findWherePagination(fieldsSearch, 0, 30, isComplete);
 }
 
 async function getDocumentReference(documentIndex, recordsCollection) {
@@ -34,7 +34,7 @@ export async function findWherePagination(
   fieldsSearch: FieldsSearch,
   pageNumber: number = 0,
   pageSize: number = 10,
-  isIncomplete: boolean = false,
+  isComplete: boolean = false,
 ) {
   const { num, year, ext }: FieldsSearch = fieldsSearch;
 
@@ -46,7 +46,7 @@ export async function findWherePagination(
     console.log("Faltan campos de busqueda");
     return [];
   }
-
+ 
   if (fieldsSearch.extract) {
     return await findWithExtract(fieldsSearch, pageNumber, pageSize);
   }
@@ -54,9 +54,9 @@ export async function findWherePagination(
   const startAfterDocument =
     pageNumber > 1 ? (pageNumber - 1) * pageSize : null;
 
-    const recordsCollection = isIncomplete
-    ? `${process.env.NEXT_PUBLIC_FIREBASE_COLLECTION_RECORDS_INCOMPLETE}/${fieldsSearch.year}`
-    : `${process.env.NEXT_PUBLIC_FIREBASE_COLLECTION_RECORDS}/${fieldsSearch.year}`;
+    const recordsCollection = isComplete
+    ? `${process.env.NEXT_PUBLIC_FIREBASE_COLLECTION_RECORDS}/${fieldsSearch.year}`
+    : `${process.env.NEXT_PUBLIC_FIREBASE_COLLECTION_RECORDS_INCOMPLETE}/${fieldsSearch.year}`
 
   let pageQuery = query(collection(db, recordsCollection), limit(pageSize));
 
