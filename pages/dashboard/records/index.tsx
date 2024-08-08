@@ -288,7 +288,7 @@ export default function Search() {
                 variant="contained"
                 color="primary"
                 onClick={() => handleOpenDialog("modify")}
-                disabled={rows.length === 0}
+                disabled
               >
                 Modificar
               </Button>
@@ -296,7 +296,7 @@ export default function Search() {
                 variant="contained"
                 color="secondary"
                 onClick={() => handleOpenDialog("delete")}
-                disabled={rows.length === 0}
+                disabled
               >
                 Eliminar
               </Button>
